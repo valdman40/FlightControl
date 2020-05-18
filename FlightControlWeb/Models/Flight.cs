@@ -14,8 +14,6 @@ namespace FlightControlWeb.Models
         private string date_time;
         private Location loc;
         private bool is_external;
-        public string Company { get { return company_name; } set { company_name = value; } }
-        public int ID { get { return flight_id; } set { flight_id = value; } }
         public int Flight_id { get { return flight_id; } set { flight_id = value; } }
         public int Passangers { get { return passangers; } set { passangers = value; } }
         public string Company_name { get { return company_name; } set { company_name = value; } }

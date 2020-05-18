@@ -19,8 +19,14 @@ namespace FlightControlWeb
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 var x = cnn.Query("select * from Flight", new DynamicParameters());
-                var output = cnn.Query<Flight>("select * from Flight", new DynamicParameters());
-                return output.ToList();
+                var y = x.ToList();
+                int len = (int) y.Count();
+                List<Flight> output = new List<Flight>();
+                for (int i = 0; i < len; i++)
+                {
+                    output.Add(new Flight() { Flight_id = (int) y[i].ID, Company_name = y[i].Company });
+                }
+                return output;
             }
         }
         public static void SaveFlight(Flight sflight)
