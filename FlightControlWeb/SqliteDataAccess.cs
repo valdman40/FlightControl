@@ -8,6 +8,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 
 namespace FlightControlWeb
 {
@@ -17,6 +18,7 @@ namespace FlightControlWeb
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
+                var x = cnn.Query("select * from Flight", new DynamicParameters());
                 var output = cnn.Query<Flight>("select * from Flight", new DynamicParameters());
                 return output.ToList();
             }

@@ -7,10 +7,21 @@
 <body>
     <h2>Add New Flight</h2>
     <form action="../api/Flight" method="post"></form>
-    flight Id: <input type="number" /><br />
-    company_name: <input type="text" /><br />
-    <button id="btnAddFlight">Add Flight</button>
-
+    flight Id: <input type="number" id="inputNumber" /><br />
+    company_name: <input type="text" id="inputCompany" /><br />
+    <input type="button" id="btnAddFlight" value="Add Flight" onclick="enterNewFlight()">
+    <script type="text/javascript">
+        function initValues() {
+            document.getElementById('inputNumber').value = "";
+            document.getElementById('inputCompany').value = "";
+        }
+        function enterNewFlight() {
+            var inputNumber = document.getElementById('inputNumber').value;
+            var inputCompany = document.getElementById('inputCompany').value;
+            $("#tblFlights").append("<tr><td>" + inputNumber + "</td" + "<td>" + " " + inputCompany + "</td></tr>");
+            initValues();
+        };
+    </script>
     <h2>Flights Table</h2>
     <table id="tblFlights">
         <tr>
@@ -21,18 +32,13 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script>
             var productsUrl = "../api/Flight"
-            
             $.getJSON(productsUrl, function (data) {
                 console.log(data);
                 data.forEach(function (flight) {
-                    $("#tblFlights").append("<tr><td>" + flight.flight_id + "</td" + "<td>" + flight.company_name + "</td></tr>");
+                    $("#tblFlights").append("<tr><td>" + flight.flight_id + "</td" + "<td>" + " " + flight.company_name + "</td></tr>");
                 });
             });
         </script>
-
-
-
-
 
     </table>
 </body>
