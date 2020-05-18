@@ -6,20 +6,23 @@ using FlightControlWeb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace FlightControlWeb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class FlightController : ControllerBase
     {
-        private IDataManager data = new CacheManager();
+        private readonly SqliteDataAccess data = new SqliteDataAccess();
         // GET: api/Flight
         [HttpGet]
         public IEnumerable<Flight> GetAllFlights()
         {
-            return data.GetAllFlights();
+            // return data.GetAllFlights();
+            return SqliteDataAccess.LoadFlights();
         }
 
+        /*
         // GET: api/Flight/5
         [HttpGet("{id}")]
         public Flight Get(int id)
@@ -27,11 +30,13 @@ namespace FlightControlWeb.Controllers
            return data.GetFlightById(id);
         }
 
+        */
         // POST: api/Flight
         [HttpPost]
         public Flight Post(Flight f)
         {
-            return data.AddFlight(f);
+            SqliteDataAccess.SaveFlight(f);
+            return f;
         }
 
         // PUT: api/Flight/5
