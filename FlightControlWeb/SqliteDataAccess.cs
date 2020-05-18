@@ -24,7 +24,7 @@ namespace FlightControlWeb
                 List<Flight> output = new List<Flight>();
                 for (int i = 0; i < len; i++)
                 {
-                    output.Add(new Flight() { Flight_id = (int) y[i].ID, Company_name = y[i].Company });
+                    output.Add(new Flight() { Flight_id = y[i].ID, Company_name = y[i].Company });
                 }
                 return output;
             }

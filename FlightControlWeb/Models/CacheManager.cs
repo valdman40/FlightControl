@@ -9,9 +9,9 @@ namespace FlightControlWeb.Models
     {
         private static List<Flight> flist = new List<Flight>()
         {
-            new Flight{Flight_id = 1},
-            new Flight{Flight_id = 2},
-            new Flight{Flight_id = 3}};
+            new Flight{Flight_id = "1"},
+            new Flight{Flight_id = "2"},
+            new Flight{Flight_id = "3"}};
 
         public Flight AddFlight(Flight fp)
         {
@@ -19,9 +19,9 @@ namespace FlightControlWeb.Models
             return fp;
         }
 
-        public void DeleteFlight(int id)
+        public void DeleteFlight(string id)
         {
-            Flight f = flist.Where(x => x.Flight_id == id).FirstOrDefault();
+            Flight f = flist.Where(x => x.Flight_id.Equals(id)).FirstOrDefault();
             if (f == null)
             {
                 throw new Exception("product not found");
@@ -34,9 +34,9 @@ namespace FlightControlWeb.Models
             return flist;
         }
 
-        public Flight GetFlightById(int id)
+        public Flight GetFlightById(string id)
         {
-            Flight f = flist.Where(x => x.Flight_id == id).FirstOrDefault();
+            Flight f = flist.Where(x => x.Flight_id.Equals(id)).FirstOrDefault(); // x.Flight_id == id
             if (f == null)
             {
                 throw new Exception("product not found");
