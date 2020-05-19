@@ -18,7 +18,7 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public IEnumerable<Flight> GetAllFlights()
         {
-            // return data.GetAllFlights();
+            string x = this.Request.Query["relative_to"];
             return SqliteDataAccess.LoadFlights();
         }
 
@@ -33,7 +33,7 @@ namespace FlightControlWeb.Controllers
         */
         // POST: api/Flight
         [HttpPost]
-        public Flight Post(Flight f)
+        public Flight Post(Flight f) // need to delete
         {
             SqliteDataAccess.SaveFlight(f);
             return f;
@@ -50,5 +50,7 @@ namespace FlightControlWeb.Controllers
         public void Delete(int id)
         {
         }
+
+
     }
 }

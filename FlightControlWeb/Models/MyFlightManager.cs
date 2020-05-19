@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    interface IFlight
+    public class MyFlightManager : IFlightManager
     {
+
     }
 }
