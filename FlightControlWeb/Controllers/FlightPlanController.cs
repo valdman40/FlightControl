@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlightControlWeb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,18 +12,11 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightPlanController : ControllerBase
     {
-        // GET: api/FlightPlan
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
         // GET: api/FlightPlan/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public FlightPlan Get(int id)
         {
-            return "value";
+            return MyFlightPlanManager.getFlightPlan(id);
         }
 
         // POST: api/FlightPlan

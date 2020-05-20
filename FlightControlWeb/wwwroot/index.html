@@ -23,23 +23,28 @@
         };
     </script>
     <h2>Flights Table</h2>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script>
+        var productsUrl = "../api/Flight"
+        $.getJSON(productsUrl, function (data) {
+            console.log(data);
+            data.forEach(function (flight) {
+                $("#tblFlights").append(
+                    "<tr><td>" +
+                    flight.flight_id + "   " +
+                    flight.company_name + "    " +
+                    flight.is_external + "    " +
+                    flight.date_time +
+                    "</td></tr>"
+                );
+            });
+        });
+    </script>
     <table id="tblFlights">
         <tr>
             <th>Flight Id</th>
             <th>Company</th>
         </tr>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-        <script>
-            var productsUrl = "../api/Flight"
-            $.getJSON(productsUrl, function (data) {
-                console.log(data);
-                data.forEach(function (flight) {
-                    $("#tblFlights").append("<tr><td>" + flight.flight_id + "</td" + "<td>" + " " + flight.company_name + "</td></tr>");
-                });
-            });
-        </script>
-
     </table>
 </body>
 </html>

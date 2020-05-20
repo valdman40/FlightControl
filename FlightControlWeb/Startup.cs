@@ -34,7 +34,7 @@ namespace FlightControlWeb
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseStaticFiles();
+            app.UseStaticFiles(); // gives us access to wwwroot content
 
             app.UseRouting();
 

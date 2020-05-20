@@ -6,7 +6,6 @@ using FlightControlWeb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace FlightControlWeb.Controllers
 {
     [Route("api/[controller]")]
@@ -18,19 +17,21 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public IEnumerable<Flight> GetAllFlights()
         {
-            string x = this.Request.Query["relative_to"];
-            return SqliteDataAccess.LoadFlights();
+            if (Request.Query.ContainsKey("sync_all"))
+            {
+                return MyFlightManager.GetAllFlights(Request.Query["relative_to"]); // date located at Request.Query["relative_to"]
+            }
+            return MyFlightManager.GetInternalFlights(Request.Query["relative_to"]);
         }
 
-        /*
+        
         // GET: api/Flight/5
         [HttpGet("{id}")]
         public Flight Get(int id)
         {
-           return data.GetFlightById(id);
+            return MyFlightManager.getFlight(id);
         }
 
-        */
         // POST: api/Flight
         [HttpPost]
         public Flight Post(Flight f) // need to delete
@@ -49,6 +50,7 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            MyFlightManager.deleteFlight(id);
         }
 
 

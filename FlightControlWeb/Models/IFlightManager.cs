@@ -7,10 +7,5 @@ namespace FlightControlWeb.Models
 {
     interface IFlightManager
     {
-        public List<Flight> loadFlights(string request)
-        {
-            // bool sync = false;
-            return null;
-        }
     }
 }

@@ -20,7 +20,6 @@ namespace FlightControlWeb.Models
         public string Company_name { get { return company_name; } set { company_name = value; } }
         public string Date_time { get { return date_time; } set { date_time = value; } }
         public Location Loc { get { return loc; } set { loc = value; } }
-        public DateTime Date { get { return date; } set { date = value; } }
         public bool Is_external { get { return is_external; } set { is_external = value; } }
     }
 }
