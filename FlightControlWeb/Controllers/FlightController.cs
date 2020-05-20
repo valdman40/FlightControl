@@ -12,16 +12,20 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightController : ControllerBase
     {
-        private readonly SqliteDataAccess data = new SqliteDataAccess();
+        private readonly IFlightManager fManager;
+        public FlightController(IFlightManager fm)
+        {
+            fManager = fm;
+        }
         // GET: api/Flight
         [HttpGet]
         public IEnumerable<Flight> GetAllFlights()
         {
             if (Request.Query.ContainsKey("sync_all"))
             {
-                return MyFlightManager.GetAllFlights(Request.Query["relative_to"]); // date located at Request.Query["relative_to"]
+                return fManager.GetAllFlights(Request.Query["relative_to"]); // date located at Request.Query["relative_to"]
             }
-            return MyFlightManager.GetInternalFlights(Request.Query["relative_to"]);
+            return fManager.GetInternalFlights(Request.Query["relative_to"]);
         }
 
         
@@ -29,7 +33,7 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}")]
         public Flight Get(int id)
         {
-            return MyFlightManager.getFlight(id);
+            return fManager.getFlight(id);
         }
 
         // POST: api/Flight
@@ -50,7 +54,7 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            MyFlightManager.deleteFlight(id);
+            fManager.deleteFlight(id);
         }
 
 

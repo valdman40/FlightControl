@@ -12,7 +12,7 @@ namespace FlightControlWeb.Models
 {
     public class MyFlightManager : IFlightManager
     {
-        public static List<Flight> GetInternalFlights(string date)
+        public List<Flight> GetInternalFlights(string date)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
@@ -34,7 +34,7 @@ namespace FlightControlWeb.Models
                 return output;
             }
         }
-        public static List<Flight> GetAllFlights(string date)
+        public  List<Flight> GetAllFlights(string date)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
@@ -57,7 +57,7 @@ namespace FlightControlWeb.Models
             }
         }
 
-        public static void deleteFlight(int id)
+        public  void deleteFlight(int id)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
@@ -70,11 +70,15 @@ namespace FlightControlWeb.Models
             
         }
 
-        public static Flight getFlight(int id)
+        
+        /*
+         * this function finds the FlightPlan (by ID) in the DB and generates a Flight Object accordingly
+         */
+        public Flight getFlight(int id)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string query = "SELECT * FROM Flight WHERE ID =" + id;
+                string query = "SELECT * FROM FlightPlans WHERE ID =" + id;
                 var x = cnn.Query(query, new DynamicParameters());
                 var y = x.ToList()[0];
                 return new Flight() { Flight_id = y.ID, Company_name = y.Company, Date_time = y.date_time, Is_external = false };
@@ -86,4 +90,5 @@ namespace FlightControlWeb.Models
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
     }
+
 }

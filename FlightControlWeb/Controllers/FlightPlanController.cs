@@ -12,11 +12,17 @@ namespace FlightControlWeb.Controllers
     [ApiController]
     public class FlightPlanController : ControllerBase
     {
+        private readonly IFlightPlanManager fpManager;
+
+        public FlightPlanController(IFlightPlanManager fpm)
+        {
+            fpManager = fpm;
+        }
         // GET: api/FlightPlan/5
         [HttpGet("{id}")]
         public FlightPlan Get(int id)
         {
-            return MyFlightPlanManager.getFlightPlan(id);
+            return fpManager.getFlightPlan(id);
         }
 
         // POST: api/FlightPlan

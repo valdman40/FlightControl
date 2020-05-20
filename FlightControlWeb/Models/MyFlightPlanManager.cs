@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    public class MyFlightPlanManager
+    public class MyFlightPlanManager: IFlightPlanManager
     {
-        public static FlightPlan getFlightPlan(int id)
+        public FlightPlan getFlightPlan(int id)    //this method was static by mistake?                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    -+
+        
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
@@ -20,6 +21,11 @@ namespace FlightControlWeb.Models
                 var y = x.ToList()[0];
                 return new FlightPlan() { ID = y.ID, Company_name = y.Company, Date = y.date_time};
             }
+        }
+
+        public void addFlightPlan()
+        {
+            throw new NotImplementedException();
         }
 
         private static string LoadConnectionString(string id = "Default")

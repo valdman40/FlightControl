@@ -5,7 +5,11 @@ using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models
 {
-    interface IFlightManager
+    public interface IFlightManager
     {
+        List<Flight> GetAllFlights(string date);
+        List<Flight> GetInternalFlights(string date);
+        void deleteFlight(int id);
+        Flight getFlight(int id);
     }
 }
