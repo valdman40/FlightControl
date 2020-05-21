@@ -19,13 +19,21 @@ namespace FlightControlWeb.Models
                 string query = "SELECT * FROM FlightPlan WHERE ID =" + id;
                 var x = cnn.Query(query, new DynamicParameters());
                 var y = x.ToList()[0];
-                return new FlightPlan() { ID = y.ID, Company_name = y.Company, Date = y.date_time};
+                return new FlightPlan() { ID = y.ID, Company = y.Company, Passangers = (int)y.Passangers };
             }
         }
 
-        public void addFlightPlan()
+        public void addFlightPlan(FlightPlan flightPlan)
         {
-            throw new NotImplementedException();
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                string postQuery = "INSERT INTO Server (ID, Company, Passengers) VALUES('" + flightPlan.ID + "', " +
+                    "'" + flightPlan.Company + "', '" + flightPlan.Passangers +")";
+                if (cnn.Execute(postQuery) != 1)
+                {
+                    Console.WriteLine("failed Posting flightPlan: " + flightPlan);
+                }
+            }
         }
 
         private static string LoadConnectionString(string id = "Default")

@@ -27,8 +27,9 @@ namespace FlightControlWeb.Controllers
 
         // POST: api/FlightPlan
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] FlightPlan flightPlan)
         {
+            fpManager.addFlightPlan(flightPlan);
         }
 
         // PUT: api/FlightPlan/5

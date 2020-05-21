@@ -8,17 +8,15 @@ namespace FlightControlWeb.Models
     public class FlightPlan
     {
         private string id;
-        private int passangers;
-        private string company_name;
-        private DateTime date_time;
-        private Location initial_location;
-        private Segment[] segments;
-
         public string ID{ get { return id; } set { id = value; } }
-        public DateTime Date { get { return date_time; } set { date_time = value; } }  
+//        private DateTime date_time;
+  //      private Location initial_location;
+    //    private Segment[] segments;
+        private string company_name;
+        public string Company { get { return company_name; } set { company_name = value; } }
+        private int passangers;
         public int Passangers { get { return passangers; } set { passangers = value; } }
-        public string Company_name { get { return company_name; } set { company_name = value; } }
-        public Location Initial_location { get { return initial_location; } set { initial_location = value; } }
-        public Segment[] Segments { get { return segments; } set { segments = value; } }
+       // public Location Location_ID { get { return initial_location; } set { initial_location = value; } }
+      //  public Segment[] Segments { get { return segments; } set { segments = value; } }
     }
 }

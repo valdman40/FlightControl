@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FlightControlWeb.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace FlightControlWeb.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class serversController : ControllerBase
+    {
+        private readonly IServerManager sManager;
+        public serversController(IServerManager sm)
+        {
+            sManager = sm;
+        }
+
+        // GET: api/servers
+        [HttpGet]
+        public IEnumerable<Server> GetAllServers()
+        {
+            return sManager.getServers();
+        }
+
+        // POST: api/servers
+        [HttpPost]
+        public void Post([FromBody] Server newServer)
+        {
+            sManager.postServer(newServer);
+        }
+
+    }
+}

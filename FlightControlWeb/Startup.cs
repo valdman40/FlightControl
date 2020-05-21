@@ -28,6 +28,7 @@ namespace FlightControlWeb
             services.AddControllers();
             services.AddSingleton(typeof(IFlightPlanManager), typeof(MyFlightPlanManager));
             services.AddSingleton(typeof(IFlightManager), typeof(MyFlightManager));
+            services.AddSingleton(typeof(IServerManager), typeof(MyServersManager));
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
