@@ -27,8 +27,8 @@ namespace FlightControlWeb.Models
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string postQuery = "INSERT INTO Server (ID, Company, Passengers) VALUES('" + flightPlan.ID + "', " +
-                    "'" + flightPlan.Company + "', '" + flightPlan.Passangers +")";
+                string postQuery = "INSERT INTO FlightPlan (ID, Company, Passangers) VALUES('" + flightPlan.ID + "', " +
+                    "'" + flightPlan.Company + "', " + flightPlan.Passangers +")";
                 if (cnn.Execute(postQuery) != 1)
                 {
                     Console.WriteLine("failed Posting flightPlan: " + flightPlan);
