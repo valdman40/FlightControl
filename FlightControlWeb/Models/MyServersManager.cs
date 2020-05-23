@@ -46,5 +46,17 @@ namespace FlightControlWeb.Models
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
+
+        public void deleteServer(string id)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                string deleteQuery = "DELETE from Server WHERE ID = '" + id+"'";
+                if (cnn.Execute(deleteQuery) != 1)
+                {
+                    Console.WriteLine("failed deleting ID: " + id);
+                }
+            }
+        }
     }
 }

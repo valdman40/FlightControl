@@ -10,14 +10,15 @@ namespace FlightControlWeb.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FlightController : ControllerBase
+    public class FlightsController : ControllerBase
     {
         private readonly IFlightManager fManager;
-        public FlightController(IFlightManager fm)
+        public FlightsController(IFlightManager fm)
         {
             fManager = fm;
         }
-        // GET: api/Flight
+        // GET: api/Flights
+        // return all flights (if sync_all is part of the args, return include external)
         [HttpGet]
         public IEnumerable<Flight> GetAllFlights()
         {
@@ -36,21 +37,7 @@ namespace FlightControlWeb.Controllers
             return fManager.getFlight(id);
         }
 
-        // POST: api/Flight
-        [HttpPost]
-        public Flight Post(Flight f) // need to delete
-        {
-            SqliteDataAccess.SaveFlight(f);
-            return f;
-        }
-
-        // PUT: api/Flight/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Flights/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

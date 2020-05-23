@@ -9,5 +9,7 @@ namespace FlightControlWeb.Models
     {
         List<Server> getServers();
         void postServer(Server server);
+
+        void deleteServer(string id);
     }
 }

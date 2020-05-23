@@ -19,6 +19,7 @@ namespace FlightControlWeb.Controllers
         }
 
         // GET: api/servers
+        // returns all servers
         [HttpGet]
         public IEnumerable<Server> GetAllServers()
         {
@@ -26,11 +27,18 @@ namespace FlightControlWeb.Controllers
         }
 
         // POST: api/servers
+        // info in post body
         [HttpPost]
         public void Post([FromBody] Server newServer)
         {
             sManager.postServer(newServer);
         }
 
+        // DELETE: api/servers/{id}
+        [HttpDelete("{id}")]
+        public void Delete(string id)
+        {
+            sManager.deleteServer(id);
+        }
     }
 }
