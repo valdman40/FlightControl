@@ -21,7 +21,7 @@ namespace FlightControlWeb.Controllers
         }
         // GET: api/FlightPlan/5
         [HttpGet("{id}")]
-        public FlightPlan Get(int id)
+        public FlightPlan Get(string id)
         {
             return fpManager.getFlightPlan(id);
         }

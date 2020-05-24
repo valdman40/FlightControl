@@ -14,15 +14,43 @@ namespace FlightControlWeb.Models
 {
     public class MyFlightPlanManager: IFlightPlanManager
     {
-        public FlightPlan getFlightPlan(int id)    //this method was static by mistake?                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    -+
+        public FlightPlan getFlightPlan(string id)    //this method was static by mistake?                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    -+
         
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string query = "SELECT * FROM FlightPlans WHERE ID =" + id;
-                var x = cnn.Query(query, new DynamicParameters());
-                var y = x.ToList()[0];
-                return new FlightPlan() { };
+                string getQuery_fromFlightPlans = "SELECT * FROM FlightPlans WHERE ID ='" + id+"'";
+                string getQuery_fromSegments = "SELECT Longitude,Latitude,Timespan FROM Segments WHERE Flight_ID ='" + id + "'";
+                var x = cnn.Query(getQuery_fromFlightPlans, new DynamicParameters());
+                var y = x.ToList();
+                string getQuery_fromInitialLocations = "SELECT Longitude,Latitude,Date FROM Initial_Locations WHERE ID ='" + y[0].Initial_Location_ID + "'";
+                x = cnn.Query(getQuery_fromInitialLocations, new DynamicParameters());
+                var z = x.ToList()[0];
+                Initial_Location initial_Location = new Initial_Location()
+                {
+                    latitude = z.Latitude,
+                    longitude = z.Longitude,
+                    date_time = DateTime.Parse(z.Date)
+                };
+                x = cnn.Query(getQuery_fromSegments, new DynamicParameters());
+                var a = x.ToList();
+                List<Segment> segments = new List<Segment>();
+                foreach (var ob in a)
+                {
+                    segments.Add(new Segment() 
+                    {
+                        latitude = ob.Latitude,
+                        longitude = ob.Longitude,
+                        timespan_seconds = (int)ob.Timespan
+                    });
+                }
+                return new FlightPlan()
+                {
+                    company_name = y[0].Company,
+                    passengers = (int)y[0].Passengers,
+                    initial_location = initial_Location,
+                    segments = segments.ToArray()
+                };
             }
         }
 
