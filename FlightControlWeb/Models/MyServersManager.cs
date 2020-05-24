@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
+using FlightControlWeb.Types;
 using System.Threading.Tasks;
 
 namespace FlightControlWeb.Models

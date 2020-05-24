@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using System.Diagnostics;
+using FlightControlWeb.Types;
 
 namespace FlightControlWeb
 {
@@ -39,8 +40,6 @@ namespace FlightControlWeb
                 for (int i = 0; i < len; i++)
                 {
                     output.Add(new Flight() { 
-                        Flight_id = y[i].ID, 
-                        Company_name = y[i].Company, 
                     });
                     /*
                                          Date_time = y[i].date_time,

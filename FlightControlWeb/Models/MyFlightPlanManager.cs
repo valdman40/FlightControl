@@ -5,7 +5,9 @@ using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;
+using FlightControlWeb.Types;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 
 namespace FlightControlWeb.Models
 {
@@ -19,20 +21,22 @@ namespace FlightControlWeb.Models
                 string query = "SELECT * FROM FlightPlan WHERE ID =" + id;
                 var x = cnn.Query(query, new DynamicParameters());
                 var y = x.ToList()[0];
-                return new FlightPlan() { ID = y.ID, Company = y.Company, Passangers = (int)y.Passangers };
+                return new FlightPlan() { };
             }
         }
 
         public void addFlightPlan(FlightPlan flightPlan)
         {
+            // generate ID function
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string postQuery = "INSERT INTO FlightPlan (ID, Company, Passangers) VALUES('" + flightPlan.ID + "', " +
-                    "'" + flightPlan.Company + "', " + flightPlan.Passangers +")";
-                if (cnn.Execute(postQuery) != 1)
-                {
-                    Console.WriteLine("failed Posting flightPlan: " + flightPlan);
-                }
+                Initial_Location initial_Location = flightPlan.initial_location;
+                string postQuery_Location = "INSERT INTO FlightPlan(flight_ID, company_name, passengers, location_id) " +
+    "                                          VALUES(@flight_ID,@company_name, @passengers, @location_id)";
+                cnn.Execute(postQuery_Location, flightPlan);
+                string postQuery_FlightPlan = "INSERT INTO FlightPlan(flight_ID, company_name, passengers, location_id) " +
+                    "                                          VALUES(@flight_ID,@company_name, @passengers, @location_id)";
+                cnn.Execute(postQuery_FlightPlan, flightPlan);
             }
         }
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FlightControlWeb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using FlightControlWeb.Types;
 
 namespace FlightControlWeb.Controllers
 {
@@ -27,7 +28,7 @@ namespace FlightControlWeb.Controllers
 
         // POST: api/FlightPlan
         [HttpPost]
-        public void Post([FromBody] FlightPlan flightPlan)
+         public void Post([FromBody] FlightPlan flightPlan)
         {
             fpManager.addFlightPlan(flightPlan);
         }
