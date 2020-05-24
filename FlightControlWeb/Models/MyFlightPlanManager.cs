@@ -8,6 +8,7 @@ using System.Linq;
 using FlightControlWeb.Types;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using System.Text.RegularExpressions;
 
 namespace FlightControlWeb.Models
 {
@@ -28,7 +29,7 @@ namespace FlightControlWeb.Models
         public void addFlightPlan(FlightPlan flightPlan)
         {
             // generate ID function
-            string uniqueID = "43f34sd";
+            string uniqueID = generateUniqueID(flightPlan.company_name);
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 // post into Initial_Locations table
@@ -36,25 +37,53 @@ namespace FlightControlWeb.Models
                 string dateString = "'"+initial_Location.date_time.ToString("yyyy-MM-ddTHH:mm:ssZ")+ "'";
                 string postQuery_Initial_Locations = "INSERT INTO Initial_Locations(Longitude, Latitude, Date)"+
                                                                   " VALUES(@longitude, @latitude, " + dateString + ")";
-                cnn.Execute(postQuery_Initial_Locations, initial_Location); // returns 1 if success
+                cnn.Execute(postQuery_Initial_Locations, initial_Location);
 
                 // post into FlightPlans table
                 string getQuery_extractInitialLocationID = "SELECT ID FROM Initial_Locations ORDER BY ID DESC LIMIT 1";
                 var x = cnn.Query(getQuery_extractInitialLocationID, new DynamicParameters());
                 int lastIDFromInitialLocations = (int)x.ToList()[0].ID;
                 string postQuery_FlightPlans = "INSERT INTO FlightPlans(ID, Company, Passengers, Initial_Location_ID)" +
-                                                             " VALUES('"+ uniqueID + "',@company_name, @passengers, " + lastIDFromInitialLocations + ")";
-                int i = cnn.Execute(postQuery_FlightPlans, flightPlan); // returns 1 if success
+                                                               " VALUES('"+ uniqueID + "',@company_name, @passengers, " + lastIDFromInitialLocations + ")";
+                cnn.Execute(postQuery_FlightPlans, flightPlan);
                 
                 // post into Segments table
                 string postQuery_Segment = "";
                 foreach(Segment segment in flightPlan.segments)
                 {
                     postQuery_Segment = "INSERT INTO Segments(Longitude, Latitude, TimeSpan, Flight_ID)" +
-                                                             " VALUES(@longitude, @latitude, @timespan_seconds, '" + uniqueID + "')";
+                                                     " VALUES(@longitude, @latitude, @timespan_seconds, '" + uniqueID + "')";
                     cnn.Execute(postQuery_Segment, segment);
                 }
             }
+        }
+
+        private string generateUniqueID(string stringBase)
+        {
+            var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            var numbers = "0123456789";
+            var stringVar = new char[10];
+            stringVar[0] = stringBase[0];
+            Random rnd = new Random();
+            if (stringBase.Length > 3)
+            {
+                stringVar[1] = stringBase[1];
+                stringVar[2] = stringBase[2];
+            } else
+            {
+                stringVar[1] = 'X';
+                stringVar[2] = 'X';
+            }
+            stringVar[3] = '_';
+            for (int i = 4; i < 8; i++)
+            {
+                stringVar[i] = abc[rnd.Next(abc.Length)];
+            }
+            for (int i = 8; i < 10; i++)
+            {
+                stringVar[i] = numbers[rnd.Next(numbers.Length)];
+            }
+            return new string(stringVar);
         }
 
         private static string LoadConnectionString(string id = "Default")
