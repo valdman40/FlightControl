@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
+using FlightControlWeb.Types;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace FlightControlWeb.Models
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string query = "SELECT * FROM Flights WHERE date_time = '" + date + "' AND is_external = 0";
+                string query = "SELECT * FROM FlightPlan WHERE date_time = '" + date + "' AND is_external = 0";
                 var x = cnn.Query(query, new DynamicParameters());
                 var y = x.ToList();
                 int len = (int)y.Count();
@@ -25,10 +26,10 @@ namespace FlightControlWeb.Models
                 {
                     output.Add(new Flight()
                     {
-                        Flight_id = y[i].ID,
-                        Company_name = y[i].Company,
-                        Date_time = date,
-                        Is_external = false
+                        flight_id = y[i].ID,
+                        company_name = y[i].Company,
+                        date_time = DateTime.Parse(date),
+                        is_external = false
                     });
                 }
                 return output;
@@ -38,7 +39,7 @@ namespace FlightControlWeb.Models
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string query = "SELECT * FROM Flights WHERE date_time = '" + date + "'";
+                string query = "SELECT * FROM FlightPlan WHERE date_time = '" + date + "'";
                 var x = cnn.Query(query, new DynamicParameters());
                 var y = x.ToList();
                 int len = (int)y.Count();
@@ -47,10 +48,10 @@ namespace FlightControlWeb.Models
                 {
                     output.Add(new Flight()
                     {
-                        Flight_id = y[i].ID,
-                        Company_name = y[i].Company,
-                        Date_time = date,
-                        Is_external = true
+                        flight_id = y[i].ID,
+                        company_name = y[i].Company,
+                        date_time = DateTime.Parse(date),
+                        is_external = true
                     });
                 }
                 return output;
@@ -61,7 +62,7 @@ namespace FlightControlWeb.Models
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string deleteQuery = "DELETE from Flights WHERE ID = " + id;
+                string deleteQuery = "DELETE from FlightPlan WHERE ID = " + id;
                 if (cnn.Execute(deleteQuery) != 1)
                 {
                     Console.WriteLine("failed deleting ID: " + id);
@@ -78,10 +79,10 @@ namespace FlightControlWeb.Models
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string query = "SELECT * FROM Flights WHERE ID =" + id;
+                string query = "SELECT * FROM FlightPlan WHERE ID =" + id;
                 var x = cnn.Query(query, new DynamicParameters());
                 var y = x.ToList()[0];
-                return new Flight() { Flight_id = y.ID, Company_name = y.Company, Date_time = y.date_time, Is_external = false };
+                return new Flight() { flight_id = y.ID, company_name = y.Company, date_time = DateTime.Parse(y.date_time), is_external = false };
             }
         }
 
