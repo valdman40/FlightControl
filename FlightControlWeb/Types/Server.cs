@@ -7,9 +7,7 @@ namespace FlightControlWeb.Types
 {
     public class Server
     {
-        private string serverId;
-        public string ID { get { return serverId; } set { serverId = value; } }
-        private string serverUrl;
-        public string URL{ get { return serverUrl; } set { serverUrl = value; } }
+        public string ID { get; set; }
+        public string URL { get; set; }
     }
 }

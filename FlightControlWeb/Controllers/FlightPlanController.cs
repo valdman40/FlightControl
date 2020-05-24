@@ -33,11 +33,6 @@ namespace FlightControlWeb.Controllers
             fpManager.addFlightPlan(flightPlan);
         }
 
-        // PUT: api/FlightPlan/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
