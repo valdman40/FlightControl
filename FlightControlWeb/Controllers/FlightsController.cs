@@ -14,10 +14,12 @@ namespace FlightControlWeb.Controllers
     public class FlightsController : ControllerBase
     {
         private readonly IFlightManager fManager;
+
         public FlightsController(IFlightManager fm)
         {
             fManager = fm;
         }
+
         // GET: api/Flights
         // return all flights (if sync_all is part of the args, return include external)
         [HttpGet]
@@ -30,17 +32,11 @@ namespace FlightControlWeb.Controllers
             return fManager.GetInternalFlights(Request.Query["relative_to"]);
         }
 
-        
         // GET: api/Flight/5
         [HttpGet("{id}")]
         public Flight Get(string id)
         {
             return fManager.getFlight(id);
-        }
-        [HttpPost]
-        public string Post(Flight f)
-        {
-                        return f.company_name;
         }
 
         // DELETE: api/Flights/5
@@ -49,7 +45,5 @@ namespace FlightControlWeb.Controllers
         {
             fManager.deleteFlight(id);
         }
-
-
     }
 }

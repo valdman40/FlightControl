@@ -14,11 +14,11 @@ namespace FlightControlWeb.Controllers
     public class FlightPlanController : ControllerBase
     {
         private readonly IFlightPlanManager fpManager;
-
         public FlightPlanController(IFlightPlanManager fpm)
         {
             fpManager = fpm;
         }
+
         // GET: api/FlightPlan/5
         [HttpGet("{id}")]
         public FlightPlan Get(string id)
@@ -26,18 +26,11 @@ namespace FlightControlWeb.Controllers
             return fpManager.getFlightPlan(id);
         }
 
-        // POST: api/FlightPlan
+        // POST: api/FlightPlan 
         [HttpPost]
          public void Post([FromBody] FlightPlan flightPlan)
         {
             fpManager.addFlightPlan(flightPlan);
-        }
-
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

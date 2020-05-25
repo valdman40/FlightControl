@@ -19,35 +19,38 @@ namespace FlightControlWeb.Models
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
+                // get FlightPlan by id
                 string getQuery_fromFlightPlans = "SELECT * FROM FlightPlans WHERE ID ='" + id+"'";
-                string getQuery_fromSegments = "SELECT Longitude,Latitude,Timespan FROM Segments WHERE Flight_ID ='" + id + "'";
-                var x = cnn.Query(getQuery_fromFlightPlans, new DynamicParameters());
-                var y = x.ToList();
-                string getQuery_fromInitialLocations = "SELECT Longitude,Latitude,Date FROM Initial_Locations WHERE ID ='" + y[0].Initial_Location_ID + "'";
-                x = cnn.Query(getQuery_fromInitialLocations, new DynamicParameters());
-                var z = x.ToList()[0];
+                var flightPlan = cnn.Query(getQuery_fromFlightPlans, new DynamicParameters()).ToList()[0];
+
+                // get Initial_Location by flightPlan.Initial_Location_ID
+                string getQuery_fromInitialLocations = "SELECT Longitude,Latitude,Date FROM Initial_Locations WHERE ID ='" + flightPlan.Initial_Location_ID + "'";
+                var initialLocationOb = cnn.Query(getQuery_fromInitialLocations, new DynamicParameters()).ToList()[0];
                 Initial_Location initial_Location = new Initial_Location()
                 {
-                    latitude = z.Latitude,
-                    longitude = z.Longitude,
-                    date_time = DateTime.Parse(z.Date)
+                    latitude = initialLocationOb.Latitude,
+                    longitude = initialLocationOb.Longitude,
+                    date_time = DateTime.Parse(initialLocationOb.Date)
                 };
-                x = cnn.Query(getQuery_fromSegments, new DynamicParameters());
-                var a = x.ToList();
+
+                // get segments by id and create Segments list
+                string getQuery_fromSegments = "SELECT Longitude,Latitude,Timespan FROM Segments WHERE Flight_ID ='" + id + "'";
+                var allSegmentsOb = cnn.Query(getQuery_fromSegments, new DynamicParameters()).ToList();
                 List<Segment> segments = new List<Segment>();
-                foreach (var ob in a)
+                foreach (var segmentOb in allSegmentsOb)
                 {
                     segments.Add(new Segment() 
                     {
-                        latitude = ob.Latitude,
-                        longitude = ob.Longitude,
-                        timespan_seconds = (int)ob.Timespan
+                        latitude = segmentOb.Latitude,
+                        longitude = segmentOb.Longitude,
+                        timespan_seconds = (int)segmentOb.Timespan
                     });
                 }
+
                 return new FlightPlan()
                 {
-                    company_name = y[0].Company,
-                    passengers = (int)y[0].Passengers,
+                    company_name = flightPlan.Company,
+                    passengers = (int)flightPlan.Passengers,
                     initial_location = initial_Location,
                     segments = segments.ToArray()
                 };
@@ -86,6 +89,7 @@ namespace FlightControlWeb.Models
             }
         }
 
+        // generates unique id with addition letters from stringBase
         private string generateUniqueID(string stringBase)
         {
             var abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -113,7 +117,6 @@ namespace FlightControlWeb.Models
             }
             return new string(stringVar);
         }
-
         private static string LoadConnectionString(string id = "Default")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
