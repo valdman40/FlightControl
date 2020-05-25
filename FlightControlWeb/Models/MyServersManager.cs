@@ -59,12 +59,6 @@ namespace FlightControlWeb.Models
             {
                 string deleteQuery = "DELETE from Servers WHERE ID = '" + id+"'";
                 cnn.Execute(deleteQuery, new DynamicParameters());
-                /*
-                if (cnn.Execute(deleteQuery) != 1)
-                {
-                    Console.WriteLine("failed deleting ID: " + id);
-                }
-                */
             }
         }
     }

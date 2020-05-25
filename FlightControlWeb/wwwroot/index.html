@@ -1,84 +1,420 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
-    <h2>Add New Flight</h2>
-    <form action="../api/Flight" method="post"></form>
-    flight Id: <input type="number" id="inputNumber" /><br />
-    company_name: <input type="text" id="inputCompany" /><br />
-    <input type="button" id="btnAddFlight" value="Add FlightPlan" onclick="enterNewFlightPlan()">
-    <script type="text/javascript">
-        function initValues() {
-            document.getElementById('inputNumber').value = "";
-            document.getElementById('inputCompany').value = "";
-        }
-        function enterNewFlightPlan() {
-            var FlightPlansUrl = "../api/FlightPlan"
-            var inputID = document.getElementById('inputNumber').value;
-            var inputCompany = document.getElementById('inputCompany').value;
-            var newFlightPlan = {
-                "passengers": 300,
-                "company_name": inputCompany,
-                "initial_location": {
-                    "latitude": 54,
-                    "longitude": 117,
-                    "date_time": "2018-06-25T17:26:39Z"
-                },
-                "segments": [
-                    {
-                        "longitude": 68,
-                        "latitude": 50,
-                        "timespan_seconds": 831
-                    },
-                    {
-                        "longitude": 115,
-                        "latitude": 89,
-                        "timespan_seconds": 954
-                    }
-                ]
-            };
-            
-            const jsonFlightPlan= JSON.stringify(newFlightPlan)
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", FlightPlansUrl);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(jsonFlightPlan);
-            $("#tblFlights").append("<tr><td>" + inputNumber + "</td" + "<td>" + " " + inputCompany + "</td></tr>");
-            initValues();
-        };
-    </script>
-    <h2>Flights Table</h2>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    
-    <script>
+    <title>WEB</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
+</head>
+  <!define airplan icons>
+  <script> 
+      var myIcon = L.icon({
+          iconUrl: 'plane.png',
+          iconSize: [30, 45],
+         // iconAnchor: [1, 24],
+          popupAnchor: [-3, -76],
+      });
 
-        /*
-        var productsUrl = "../api/Flight"
-        $.getJSON(productsUrl, function (data) {
-            console.log(data);
-            data.forEach(function (flight) {
-                $("#tblFlights").append(
-                    "<tr><td>" +
-                    flight.flight_id + "   " +
-                    flight.company_name + "    " +
-                    flight.is_external + "    " +
-                    flight.date_time +
-                    "</td></tr>"
-                );
-            });
-        });
-         
-         */
+      var myIcon2 = L.icon({
+          iconUrl: 'redIcon.png',
+          iconSize: [30, 45],
+         // iconAnchor: [1, 24],
+          popupAnchor: [-3, -76],
+      });
+</script>
+<body>
+  <!Exterior cover for app>
+	<div class="wrapper">
+		<div id="map">
+        <script>
+        var map = L.map('map', {minZoom:1,}).setView([33,31],5);
+        mapLink = 
+            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; ' + mapLink + ' Contributors',
+            maxZoom: 18,
+            }).addTo(map);
+        </script>
+        </div>
+		<script>
+        	L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=dwAzStO5BTv3oNPggfCv', {
+        			attribution:'<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'}).addTo(map);
+		      setTimeout(function () { map.invalidateSize() }, 10);
+		</script>
+    <!click event map - remove emphasis>
+    <script>
+      map.on('click', function() {
+            var x = document.getElementsByTagName("li");
+            document.getElementById("infoFlightdetails").innerHTML = "";
+            for(var i = 0; i < x.length; i++){
+            x[i].isPressed = false;
+            var attr1 = document.createAttribute("class");
+            attr1.value = "unpressed";
+            var h1 = document.getElementById(x[i].id);
+            h1.setAttributeNode(attr1);
+            var b = x[i].id;
+            markerFlightsDict[String(b)].setIcon(myIcon);
+          }
+      });
     </script>
-   
-    <table id="tblFlights">
-        <tr>
-            <th>Flight Id</th>
-            <th>Company</th>
-        </tr>
-    </table>
+		<div class="Title">
+			Live Flights Control
+		</div>
+		<div class = "InternalFlights">
+      <!Design the flight buttons>
+        <style>
+       body {
+          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+       }
+       * {
+          box-sizing: border-box;
+       }
+       ul {
+          list-style-type: none;
+          padding: 0;
+          margin: 0;
+       }
+       ul li {
+          border: 1px solid rgb(100, 100, 100);
+          background-color: #5a5cec;
+          color: white;
+          padding: 12px;
+          text-decoration: none;
+          font-size: 18px;
+          display: block;
+          position: relative;
+          font-weight: 500;
+       }
+       ul li:hover {
+          background-color: rgb(43, 0, 145);
+       }
+       .close {
+          cursor: pointer;
+          position: absolute;
+          top: 50%;
+          right: 0%;
+          padding: 12px 16px;
+          transform: translate(0%, -50%);
+       }
+       .close:hover {
+          background: red;
+       }
+    </style>
+    </head>
+        <body>
+            <h1>Internal Flights</h1>
+            <ul id="flightsButtons">
+            </ul>
+            <!FlightPlan json>
+            <script>
+                let FlightPlan = `{
+                                                 "passengers": 216,
+                                                 "company_name": "SwissAir",
+                                                 "initial_location": {
+                                                 "longitude": 33.244,
+                                                 "latitude": 31.12,
+                                                 "date_time": "2020-12-26T23:56:21Z"
+                                                 },
+                                                 "segments": [
+                                                 {
+                                                 "longitude": 33.234,
+                                                 "latitude": 31.18,
+                                                 "timespan_seconds": 650
+                                                 },
+                                                 {
+                                                 "longitude": 34.66,
+                                                 "latitude": 33,
+                                                 "timespan_seconds": 650
+                                                 },
+                                                 {
+                                                 "longitude": 33.66,
+                                                 "latitude": 32,
+                                                 "timespan_seconds": 650
+                                                 },
+                                                 {
+                                                 "longitude": 30.66,
+                                                 "latitude": 31,
+                                                 "timespan_seconds": 650
+                                                 }
+                                                 ]
+                                                }`
+            </script>
+            <!Flights json>
+            <script type="text/javascript">
+                let Flights =
+                    `[{
+                                               "flight_id": "[1111]",
+                                               "longitude": 33.244,
+                                               "latitude": 38.12,
+                                               "passengers": 216,
+                                               "company_name": "SwissAir",
+                                               "date_time": "2020-12-26T23:56:21Z",
+                                               "is_external": false
+                                              },
+                                              {
+                                               "flight_id": "[2222]",
+                                               "longitude": 33.50,
+                                               "latitude": 31.66,
+                                               "passengers": 216,
+                                               "company_name": "SwissAir",
+                                               "date_time": "2020-12-26T23:56:21Z",
+                                               "is_external": false
+                                              },
+                                              {
+                                               "flight_id": "[3333]",
+                                               "longitude": 35.10,
+                                               "latitude": 39.66,
+                                               "passengers": 200,
+                                               "company_name": "SwissAir",
+                                               "date_time": "2020-10-26T23:56:21Z",
+                                               "is_external": false
+                                              }]`
+            </script>
+            <! style to mark a button filght click event>
+            <style>
+                .markButtonClass {
+                    color: red;
+                }
+            </style>
+
+            <script type="text/javascript">
+                function ListClosesEventClick(data) {
+                    //console.log(data[0].latitude);
+                    var ul = document.getElementById("flightsButtons");
+                    for (let i = 0; i < data.length; i++) {
+                        var li = document.createElement("li");
+                        li.appendChild(document.createTextNode("Flight" + data[i].flight_id + " " + data[i].company_name));
+                        //List that can be closed using x
+                        var span = document.createElement("SPAN");
+                        var txt = document.createTextNode("x");
+                        span.className = "close";
+                        span.appendChild(txt);
+                        li.isPressed = "false";
+                        li.setAttribute("id", data[i].flight_id);
+                        ul.appendChild(li);
+                        li.appendChild(span);
+                        li.addEventListener("click", () => {
+                            // data is Fligt js
+                            document.getElementById("infoFlightdetails").innerHTML = "Flight id: " + data[i].flight_id + " company_name :" + data[i].company_name;
+                            // remove marks
+                            removeEmphasis();
+                            showPath(JSON.parse(FlightPlan));
+                            markerFlightsDict[data[i]["flight_id"]].setIcon(myIcon2);
+                            // mark red
+                            // redFount(data[i].flight_id);
+                        });
+                    }
+                }
+            </script>
+
+            <!--get by time function-->
+            <script>
+                var date = new Date('2019-05-20T21:27:07Z');
+                function giveMeByTime() {
+                    $.ajax({
+                        url: `../api/Flights?relative_to=${date}`,
+                        type: 'GET',
+                        success: function (result) {
+                            console.log(result);
+                            date.setSeconds(date.getSeconds() + 1);
+                            setTimeout(function () { giveMeByTime(); }, 1000);
+                        }
+                    });
+                }
+            </script>
+            <script>
+                var shelterMarkers = L.featureGroup();
+            </script>
+            <script type="text/javascript">
+                function showPath(data) {
+                    map.addLayer(shelterMarkers);
+                    var coords = [];
+                    for (let i = 0; i < data.segments.length; i++) {
+                        coords.push([data.segments[i].longitude, data.segments[i].latitude]);
+                        var polyline = L.polyline(coords, { color: 'red' }).addTo(shelterMarkers);
+                        // zoom the map to the polyline
+                        map.fitBounds(polyline.getBounds());
+                    }
+                }
+            </script>
+            <script>
+                // initialize a dictionary between flight and the icon corresponding to the map
+                var markerFlightsDict = {}
+            </script>
+            <! Draw an icon for each flight>
+            <script>
+                function DrawIcons(data) {
+                    // console.log(data.length);
+                    for (let i = 0; i < data.length; i++) {
+                        let lon = data[i]["longitude"];
+                        let lat = data[i]["latitude"];
+                        if (data[i]["flight_id"] in markerFlightsDict) {
+                            markerFlightsDict[data[i]["flight_id"]].setLatLng([lat, lon]);
+                        } else {
+                            let marker = L.marker([lat, lon], { icon: myIcon });
+                            marker.addTo(map);
+                            marker._leaflet_id = data[i].flight_id;
+                            map.addLayer(marker);
+                            //click on airplane marker
+                            marker.addEventListener("click", () => {
+                                removeEmphasis();
+                                showPath(JSON.parse(FlightPlan));
+                                // set marker icon
+                                marker.setIcon(myIcon2);
+                                document.getElementById("infoFlightdetails").innerHTML = "Flight id: " + data[i].flight_id + " company_name :" + data[i].company_name;
+                                // mark red
+                                // redFount(data[i].flight_id);
+                            });
+                            markerFlightsDict[data[i]["flight_id"]] = marker;
+                        }
+                    }
+                    // call to drew flights as buttons
+                    console.log('data: ');
+                    console.log(data);
+                    ListClosesEventClick(data);
+                }
+            </script>
+            <script type="text/javascript">
+                function redFount(datai) {
+                    // console.log(datai);
+                    var btn = document.createElement("BUTTON");
+                    var attr = document.createAttribute("class");
+                    attr.value = "markButtonClass";
+                    var h = document.getElementById(datai);
+                    h.setAttributeNode(attr);
+                    h.isPressed = true;
+                }
+            </script>
+            <! unmark icons>
+            <script type="text/javascript">
+                function removeEmphasis() {
+                    var liButton = document.getElementsByTagName("li");
+                    for (var i = 0; i < liButton.length; i++) {
+                        liButton[i].isPressed = false;
+                        var attr1 = document.createAttribute("class");
+                        attr1.value = "unpressed";
+                        var h1 = document.getElementById(liButton[i].id);
+                        h1.setAttributeNode(attr1);
+                        var markerId = liButton[i].id;
+                        markerFlightsDict[String(markerId)].setIcon(myIcon);
+                        map.removeLayer(shelterMarkers);
+
+                    }
+                }
+            </script>
+            <script>
+                function CloseButtonClicked() {
+                    var close = document.getElementsByClassName("close");
+                    for (var i = 0; i < close.length; ++i) {
+                        //click on x button
+                        close[i].onclick = function () {
+                            var div = this.parentElement;
+                            document.getElementById("infoFlightdetails").innerHTML = "";
+                            if (div.isPressed === false) { // so we want to delete
+                                map.removeLayer(markerFlightsDict[String(div.id)]);
+                                div.style.display = "none";
+                                deleteElement(div.id);
+                                event.cancelBubble = true;
+                            }
+                            else {  // so we want to unmark
+                                markerFlightsDict[String(div.id)].setIcon(myIcon);
+                                var attr1 = document.createAttribute("class");
+                                attr1.value = "unpressed";
+                                div.setAttributeNode(attr1);
+                                div.isPressed = false;
+                                event.cancelBubble = true;
+                            }
+                        }
+                    }
+                }
+            </script>
+            <!--delete function-->
+            <script>
+                function deleteElement(inputID) {
+                    console.log(inputID);
+                    $.ajax({
+                        url: `../api/Flights/${inputID}`,
+                        type: 'DELETE',
+                        success: function (result) {
+                            alert('success');
+                        },
+                        fail: function (xhr, textStatus, errorThrown) {
+                            alert('failed' + errorThrown);
+                        }
+                    });
+                }
+            </script>
+            <script type="text/javascript">
+                function clickDispaly() {
+                    var div = this.parentElement;
+                    if (div.isPressed == "false") {
+                        div.style.display = "none";
+                    }
+                    else {
+                        div.isPressed = "false";
+                        div.classList.toggle('checked');
+                    }
+                }
+            </script>
+            <script type="text/javascript">
+                var closebtns = document.querySelectorAll(".close");
+                Array.from(closebtns).forEach(item => {
+                    item.addEventListener("click", () => {
+                        item.parentElement.style.display = "none";
+                    });
+                });
+                //2018-06-25T17:26:45Z
+                var dt = new Date("25 June 2018 17:26:45 UTC");
+                function recoursiveAjaxRequest() {
+                    var date = dt.toISOString();
+                    $.ajax({
+                        url: `../api/Flights?relative_to=${date}`,
+                        type: 'GET',
+                        success: function (result) {
+                            Flights = result;
+                            dt.setSeconds(dt.getSeconds() + 4);
+                            DrawIcons(Flights);
+                            CloseButtonClicked();
+                            setTimeout(function ()
+                            {
+                                clearFlights();
+                                recoursiveAjaxRequest()
+                            }, 4000)
+                        },
+                    });
+                }
+
+                recoursiveAjaxRequest();
+                function clearFlights()
+                {
+                    var x = document.getElementsByTagName("li");
+                    document.getElementById("infoFlightdetails").innerHTML = "";
+                    //alert(x.length);
+                    for (var i = 0; i < x.length; i++) {
+
+                        map.removeLayer(markerFlightsDict[String(x[i].id)]);
+                        x[i].style.display = "none";
+                    }
+                }
+            </script>
+
+</div>
+		<div class="ExternalFlights">External Flights</div>
+		<div class="FlightDetails">Flight Details
+      <! defines a paragraph to clilck event to show details>
+      <div>
+         <p id = "infoFlightdetails"></p>
+      </div>
+    </div>
+</div>
 </body>
 </html>
+
+
+

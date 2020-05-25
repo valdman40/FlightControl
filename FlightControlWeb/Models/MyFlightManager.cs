@@ -138,11 +138,11 @@ namespace FlightControlWeb.Models
         /*
          * this function finds the FlightPlan (by ID) in the DB and generates a Flight Object accordingly
          */
-        public Flight getFlight(string id)
+        public Flight getFlight(string id) //////////////////////////////////////////////////////////////////////////////////////////
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string query = "SELECT * FROM FlightPlan WHERE ID =" + id;
+                string query = "SELECT * FROM FlightPlans WHERE ID ='" + id+"'";
                 var x = cnn.Query(query, new DynamicParameters());
                 var y = x.ToList()[0];
                 return new Flight() { flight_id = y.ID, company_name = y.Company, date_time = DateTime.Parse(y.date_time), is_external = false };
