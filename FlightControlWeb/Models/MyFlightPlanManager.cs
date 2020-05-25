@@ -47,7 +47,7 @@ namespace FlightControlWeb.Models
                 return new FlightPlan()
                 {
                     company_name = y[0].Company,
-                    passengers = y[0].Passengers,
+                    passengers = (int)y[0].Passengers,
                     initial_location = initial_Location,
                     segments = segments.ToArray()
                 };

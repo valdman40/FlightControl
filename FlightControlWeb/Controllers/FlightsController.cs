@@ -33,14 +33,19 @@ namespace FlightControlWeb.Controllers
         
         // GET: api/Flight/5
         [HttpGet("{id}")]
-        public Flight Get(int id)
+        public Flight Get(string id)
         {
             return fManager.getFlight(id);
+        }
+        [HttpPost]
+        public string Post(Flight f)
+        {
+                        return f.company_name;
         }
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
             fManager.deleteFlight(id);
         }

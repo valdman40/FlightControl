@@ -34,11 +34,16 @@ namespace FlightControlWeb.Models
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
+                string postQuery_Server = "INSERT INTO Servers(ID,URL)" +
+                                                  " VALUES(@ID, @URL)";
+                cnn.Execute(postQuery_Server, server);
+                /*
                 string postQuery = "INSERT INTO Server (ID, URL) VALUES('"+server.ID+ "', '" + server.URL + "')";
                 if (cnn.Execute(postQuery) != 1)
                 {
                     Console.WriteLine("failed Posting server: " + server);
                 }
+                */
             }
 
         }
@@ -52,11 +57,14 @@ namespace FlightControlWeb.Models
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string deleteQuery = "DELETE from Server WHERE ID = '" + id+"'";
+                string deleteQuery = "DELETE from Servers WHERE ID = '" + id+"'";
+                cnn.Execute(deleteQuery, new DynamicParameters());
+                /*
                 if (cnn.Execute(deleteQuery) != 1)
                 {
                     Console.WriteLine("failed deleting ID: " + id);
                 }
+                */
             }
         }
     }

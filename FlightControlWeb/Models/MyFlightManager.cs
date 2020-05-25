@@ -120,15 +120,27 @@ namespace FlightControlWeb.Models
             }
         }
 
-        public  void deleteFlight(int id)
+        public  void deleteFlight(string id)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                string deleteQuery = "DELETE from FlightPlan WHERE ID = " + id;
+
+                string getQuery_extractInitialLocationID = "SELECT Initial_Location_ID FROM FlightPlans WHERE ID = '" + id + "'";
+
+                var x = cnn.Query(getQuery_extractInitialLocationID, new DynamicParameters()).ToList();
+                int IDFromInitialLocations = (int)x[0].Initial_Location_ID;
+                string deleteFromFlightPlansQuery = "DELETE from FlightPlans WHERE ID = '" + id+ "'";
+                string deleteFromSegmentsQuery = "DELETE from Segments WHERE Flight_ID = '" + id+ "'";
+                string DeleteFromInitialLocQuery = "DELETE from Initial_Locations WHERE ID = " + IDFromInitialLocations;
+                var w = cnn.Query(DeleteFromInitialLocQuery, new DynamicParameters());
+                var y = cnn.Query(deleteFromFlightPlansQuery, new DynamicParameters());
+                var z = cnn.Query(deleteFromSegmentsQuery, new DynamicParameters());
+                /*
                 if (cnn.Execute(deleteQuery) != 1)
                 {
                     Console.WriteLine("failed deleting ID: " + id);
                 }
+                */
             }
             
         }
@@ -137,7 +149,7 @@ namespace FlightControlWeb.Models
         /*
          * this function finds the FlightPlan (by ID) in the DB and generates a Flight Object accordingly
          */
-        public Flight getFlight(int id)
+        public Flight getFlight(string id)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {

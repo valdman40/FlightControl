@@ -10,7 +10,7 @@ namespace FlightControlWeb.Models
     {
         List<Flight> GetAllFlights(string date);
         List<Flight> GetInternalFlights(string date);
-        void deleteFlight(int id);
-        Flight getFlight(int id);
+        void deleteFlight(string id);
+        Flight getFlight(string id);
     }
 }
