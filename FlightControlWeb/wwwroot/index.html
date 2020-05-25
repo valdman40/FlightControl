@@ -9,28 +9,43 @@
     <form action="../api/Flight" method="post"></form>
     flight Id: <input type="number" id="inputNumber" /><br />
     company_name: <input type="text" id="inputCompany" /><br />
-    <input type="button" id="btnAddFlight" value="Add Flight" onclick="enterNewFlight()">
+    <input type="button" id="btnAddFlight" value="Add FlightPlan" onclick="enterNewFlightPlan()">
     <script type="text/javascript">
         function initValues() {
             document.getElementById('inputNumber').value = "";
             document.getElementById('inputCompany').value = "";
         }
-        function enterNewFlight() {
-            var productsUrl = "../api/Flights"
-            const toSend = {
-                flight_id: "ABVC1234",
-                company_name: "company123",
-                passengers: 35
-            };
-            /*
-            const jsonString = JSON.stringify(toSend)
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", productsUrl);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(jsonString);
-            */
-            var inputNumber = document.getElementById('inputNumber').value;
+        function enterNewFlightPlan() {
+            var FlightPlansUrl = "../api/FlightPlan"
+            var inputID = document.getElementById('inputNumber').value;
             var inputCompany = document.getElementById('inputCompany').value;
+            var newFlightPlan = {
+                "passengers": 300,
+                "company_name": inputCompany,
+                "initial_location": {
+                    "latitude": 54,
+                    "longitude": 117,
+                    "date_time": "2018-06-25T17:26:39Z"
+                },
+                "segments": [
+                    {
+                        "longitude": 68,
+                        "latitude": 50,
+                        "timespan_seconds": 831
+                    },
+                    {
+                        "longitude": 115,
+                        "latitude": 89,
+                        "timespan_seconds": 954
+                    }
+                ]
+            };
+            
+            const jsonFlightPlan= JSON.stringify(newFlightPlan)
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", FlightPlansUrl);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(jsonFlightPlan);
             $("#tblFlights").append("<tr><td>" + inputNumber + "</td" + "<td>" + " " + inputCompany + "</td></tr>");
             initValues();
         };
