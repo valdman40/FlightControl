@@ -9,6 +9,9 @@ using FlightControlWeb.Types;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace FlightControlWeb.Models
 {
@@ -110,9 +113,48 @@ namespace FlightControlWeb.Models
         public  List<Flight> GetAllFlights(string date)
         {
             List<Flight> flightList = GetInternalFlights(date);
-            // need to get from other servers and add it to flightList
 
-       
+            // get Flights from other servers and add to flightList
+            var servers = (dynamic)null;
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                string query = "SELECT URL FROM Servers";
+                var result = cnn.Query(query, new DynamicParameters());
+                if (result.Count() == 0)
+                {
+                    // doesnt have servers
+                    return null;
+                }
+                servers = result.ToList();
+            }
+            foreach(var server in servers) // fetch from each server
+            {
+                string uri = server.URL + "/api/Flights?relative_to=" + date;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    // get all flights into list and then copy the elements into flightList
+                    List<Flight> externalFlights = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Flight>>(reader.ReadToEnd());
+                    DateTime dt = DateTime.Parse(date);
+                    foreach (var exFlight in externalFlights)
+                    {
+                        flightList.Add(new Flight()
+                        {
+                            flight_id = exFlight.flight_id,
+                            latitude = exFlight.latitude,
+                            longitude = exFlight.longitude,
+                            passengers = exFlight.passengers,
+                            company_name = exFlight.company_name,
+                            date_time = dt,
+                            is_external = true
+                        });
+                    }
+                }
+            }
             return flightList;
         }
 
