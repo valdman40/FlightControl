@@ -117,7 +117,13 @@ namespace FlightControlWeb.Models
             {
                 // get initial location ID by flightplan's id from FlightPlans table
                 string getQuery_extractInitialLocationID = "SELECT Initial_Location_ID FROM FlightPlans WHERE ID = '" + id + "'";
-                var initialLocationRow = cnn.Query(getQuery_extractInitialLocationID, new DynamicParameters()).ToList()[0];
+                var result = cnn.Query(getQuery_extractInitialLocationID, new DynamicParameters());
+                if (result.Count() == 0)
+                {
+                    // this Flight doesnt exist
+                    return;
+                }
+                var initialLocationRow = result.ToList()[0];
                 int IDFromInitialLocations = (int)initialLocationRow.Initial_Location_ID;
 
                 // delete the row from FlightPlans table

@@ -14,15 +14,20 @@ namespace FlightControlWeb.Models
 {
     public class MyFlightPlanManager: IFlightPlanManager
     {
-        public FlightPlan getFlightPlan(string id)    //this method was static by mistake?                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    -+
-        
+        public FlightPlan getFlightPlan(string id)    
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 // get FlightPlan by id
                 string getQuery_fromFlightPlans = "SELECT * FROM FlightPlans WHERE ID ='" + id+"'";
-                var flightPlan = cnn.Query(getQuery_fromFlightPlans, new DynamicParameters()).ToList()[0];
+                var result = cnn.Query(getQuery_fromFlightPlans, new DynamicParameters());
+                if (result.Count() == 0)
+                {
+                    // this FlightPlan doesnt exist
+                    return new FlightPlan() { };
+                }
 
+                var flightPlan = result.ToList()[0];
                 // get Initial_Location by flightPlan.Initial_Location_ID
                 string getQuery_fromInitialLocations = "SELECT Longitude,Latitude,Date FROM Initial_Locations WHERE ID ='" + flightPlan.Initial_Location_ID + "'";
                 var initialLocationOb = cnn.Query(getQuery_fromInitialLocations, new DynamicParameters()).ToList()[0];

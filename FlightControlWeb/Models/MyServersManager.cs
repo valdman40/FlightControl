@@ -18,13 +18,11 @@ namespace FlightControlWeb.Models
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 string query = "SELECT * FROM Server";
-                var x = cnn.Query(query, new DynamicParameters());
-                var y = x.ToList();
-                int len = (int)y.Count();
+                var servers = cnn.Query(query, new DynamicParameters()).ToList();
                 List<Server> output = new List<Server>();
-                for (int i = 0; i < len; i++)
+                foreach(var serverVar in servers)
                 {
-                    output.Add(new Server(){ ID = y[i].ID, URL = y[i].URL });
+                    output.Add(new Server() { ID = serverVar.ID, URL = serverVar.URL });
                 }
                 return output;
             }
@@ -37,13 +35,6 @@ namespace FlightControlWeb.Models
                 string postQuery_Server = "INSERT INTO Servers(ID,URL)" +
                                                   " VALUES(@ID, @URL)";
                 cnn.Execute(postQuery_Server, server);
-                /*
-                string postQuery = "INSERT INTO Server (ID, URL) VALUES('"+server.ID+ "', '" + server.URL + "')";
-                if (cnn.Execute(postQuery) != 1)
-                {
-                    Console.WriteLine("failed Posting server: " + server);
-                }
-                */
             }
 
         }
