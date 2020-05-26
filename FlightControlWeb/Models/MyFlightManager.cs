@@ -12,8 +12,14 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace FlightControlWeb.Models
 {
+    
     public class MyFlightManager : IFlightManager
     {
+        IDataManager DataMan;
+        public MyFlightManager(IDataManager datamanager)
+        {
+            DataMan = datamanager;
+        }
         private static string LoadConnectionString(string id = "Default")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;

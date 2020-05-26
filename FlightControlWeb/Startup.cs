@@ -25,7 +25,9 @@ namespace FlightControlWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(typeof(IDataManager), typeof(SqliteDataAccess));
             services.AddControllers();
+            
             services.AddSingleton(typeof(IFlightPlanManager), typeof(MyFlightPlanManager));
             services.AddSingleton(typeof(IFlightManager), typeof(MyFlightManager));
             services.AddSingleton(typeof(IServerManager), typeof(MyServersManager));

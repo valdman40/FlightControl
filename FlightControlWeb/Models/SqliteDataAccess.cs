@@ -13,8 +13,11 @@ using FlightControlWeb.Types;
 
 namespace FlightControlWeb
 {
-    public class SqliteDataAccess
+    public class SqliteDataAccess :IDataManager
     {
+        public SqliteDataAccess()
+        {
+        }
         public static List<Flight> LoadFlights(string timeString, bool sync_all)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
