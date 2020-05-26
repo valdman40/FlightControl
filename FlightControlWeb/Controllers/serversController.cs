@@ -22,7 +22,7 @@ namespace FlightControlWeb.Controllers
         // GET: api/servers
         // returns all servers
         [HttpGet]
-        public IEnumerable<Server> GetAllServers()
+        public IEnumerable<dynamic> GetAllServers()
         {
             return sManager.getServers();
         }
