@@ -49,19 +49,7 @@
 		</script>
     <!click event map - remove emphasis>
     <script>
-      map.on('click', function() {
-            var x = document.getElementsByTagName("li");
-            document.getElementById("infoFlightdetails").innerHTML = "";
-            for(var i = 0; i < x.length; i++){
-            x[i].isPressed = false;
-            var attr1 = document.createAttribute("class");
-            attr1.value = "unpressed";
-            var h1 = document.getElementById(x[i].id);
-            h1.setAttributeNode(attr1);
-            var b = x[i].id;
-            markerFlightsDict[String(b)].setIcon(myIcon);
-          }
-      });
+        map.on('click', function () { removeEmphasis();}  );
     </script>
 		<div class="Title">
 			Live Flights Control
@@ -233,6 +221,7 @@
             </script>
             <script type="text/javascript">
                 function showPath(flightID) {
+                    shelterMarkers.clearLayers();
                     map.addLayer(shelterMarkers);
                     var flightPlan;
                     $.ajax({
@@ -313,7 +302,6 @@
                         var flightIcon = liButton[i].id;
                         markerFlightsDict[String(flightIcon)].setIcon(myIcon); // turning to the black icon
                         map.removeLayer(shelterMarkers); // remove segments
-
                     }
                 }
             </script>
@@ -402,11 +390,11 @@
                 recoursiveAjaxRequest();
                 function clearFlights()
                 {
+                    $('ul li').remove();
                     var x = document.getElementsByTagName("li");
                     document.getElementById("infoFlightdetails").innerHTML = "";
                     //alert(x.length);
                     for (var i = 0; i < x.length; i++) {
-
                         map.removeLayer(markerFlightsDict[String(x[i].id)]);
                         x[i].style.display = "none";
                     }
