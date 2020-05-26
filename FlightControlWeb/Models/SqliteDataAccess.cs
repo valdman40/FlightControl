@@ -13,7 +13,7 @@ using FlightControlWeb.Types;
 
 namespace FlightControlWeb
 {
-    public class SqliteDataAccess :IDataManager
+    public class SqliteDataAccess : IDataManager
     {
         public SqliteDataAccess()
         {
@@ -32,17 +32,19 @@ namespace FlightControlWeb
                 {
                     // need to pull other flights from other servers
                     query = "SELECT * FROM Flight WHERE date_time = '" + timeString + "'";
-                } else
+                }
+                else
                 {
-                    query = "SELECT * FROM Flight WHERE date_time = '"+timeString+"' AND is_external = 0";
+                    query = "SELECT * FROM Flight WHERE date_time = '" + timeString + "' AND is_external = 0";
                 }
                 var x = cnn.Query(query, new DynamicParameters());
                 var y = x.ToList();
-                int len = (int) y.Count();
+                int len = (int)y.Count();
                 List<Flight> output = new List<Flight>();
                 for (int i = 0; i < len; i++)
                 {
-                    output.Add(new Flight() { 
+                    output.Add(new Flight()
+                    {
                     });
                     /*
                                          Date_time = y[i].date_time,
@@ -61,9 +63,28 @@ namespace FlightControlWeb
             }
 
         }
-        private static string LoadConnectionString(string id= "Default")
+        private static string LoadConnectionString(string id = "Default")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
+        }
+
+        public List<dynamic> ExcuteQuery(string QueryString)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var x = cnn.Query(QueryString, new DynamicParameters()).ToList();
+                return x;
+            }
+
+        }
+
+        public List<dynamic> ExcuteQuery<T>(string QueryString, T genericObject)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var x = cnn.Query(QueryString,genericObject).ToList();
+                return x;
+            }
         }
     }
 }

@@ -26,8 +26,7 @@ namespace FlightControlWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(typeof(IDataManager), typeof(SqliteDataAccess));
-            services.AddControllers();
-            
+            services.AddControllers(); 
             services.AddSingleton(typeof(IFlightPlanManager), typeof(MyFlightPlanManager));
             services.AddSingleton(typeof(IFlightManager), typeof(MyFlightManager));
             services.AddSingleton(typeof(IServerManager), typeof(MyServersManager));
