@@ -32,13 +32,6 @@ namespace FlightControlWeb.Controllers
             return fManager.GetInternalFlights(Request.Query["relative_to"]);
         }
 
-        // GET: api/Flight/5
-        [HttpGet("{id}")]
-        public Flight Get(string id)
-        {
-            return fManager.getFlight(id);
-        }
-
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
         public void Delete(string id)
