@@ -21,11 +21,11 @@ namespace FlightControlWeb.Tests
                 Server y = new Server() { ID = "test", URL = "test" };
                 mock.Mock<IDataManager>()
                     .Setup(x => x.ExcuteQuery<Server>("INSERT INTO Servers(ID,URL)" +
-                                                  " VALUES(@ID, @URL)", y)).Returns(getSampleFlightList());
+                                                  " VALUES(@ID, @URL)", y)).Returns(getSampleServerList());
    
         
                 var cls = mock.Create<MyServersManager>();
-                var expected = getSampleFlightList();
+                var expected = getSampleServerList();
                 var actual = cls.postServer(y);
                 Assert.True(actual != null);
               
