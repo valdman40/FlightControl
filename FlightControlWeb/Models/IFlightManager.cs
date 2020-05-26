@@ -11,6 +11,5 @@ namespace FlightControlWeb.Models
         List<Flight> GetAllFlights(string date);
         List<Flight> GetInternalFlights(string date);
         void deleteFlight(string id);
-        Flight getFlight(string id);
     }
 }

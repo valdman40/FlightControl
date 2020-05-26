@@ -308,11 +308,11 @@
                         liButton[i].isPressed = false;
                         var attr1 = document.createAttribute("class");
                         attr1.value = "unpressed";
-                        var h1 = document.getElementById(liButton[i].id);
-                        h1.setAttributeNode(attr1);
-                        var markerId = liButton[i].id;
-                        markerFlightsDict[String(markerId)].setIcon(myIcon);
-                        map.removeLayer(shelterMarkers);
+                        var elementInFlightsList = document.getElementById(liButton[i].id);
+                        elementInFlightsList.setAttributeNode(attr1); // will unmark the element
+                        var flightIcon = liButton[i].id;
+                        markerFlightsDict[String(flightIcon)].setIcon(myIcon); // turning to the black icon
+                        map.removeLayer(shelterMarkers); // remove segments
 
                     }
                 }
