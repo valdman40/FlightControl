@@ -128,17 +128,17 @@
                                                  "timespan_seconds": 650
                                                  },
                                                  {
-                                                 "longitude": 34.66,
-                                                 "latitude": 33,
+                                                 "longitude": 35.66,
+                                                 "latitude": 36,
                                                  "timespan_seconds": 650
                                                  },
                                                  {
                                                  "longitude": 33.66,
-                                                 "latitude": 32,
+                                                 "latitude": 39,
                                                  "timespan_seconds": 650
                                                  },
                                                  {
-                                                 "longitude": 30.66,
+                                                 "longitude": 70.66,
                                                  "latitude": 31,
                                                  "timespan_seconds": 650
                                                  }
@@ -204,7 +204,7 @@
                             document.getElementById("infoFlightdetails").innerHTML = "Flight id: " + data[i].flight_id + " company_name :" + data[i].company_name;
                             // remove marks
                             removeEmphasis();
-                            showPath(JSON.parse(FlightPlan));
+                            showPath(data[i]["flight_id"]);
                             markerFlightsDict[data[i]["flight_id"]].setIcon(myIcon2);
                             // mark red
                             // redFount(data[i].flight_id);
@@ -232,11 +232,20 @@
                 var shelterMarkers = L.featureGroup();
             </script>
             <script type="text/javascript">
-                function showPath(data) {
+                function showPath(flightID) {
                     map.addLayer(shelterMarkers);
+                    var flightPlan;
+                    $.ajax({
+                        url: `../api/FlightPlan/${flightID}`,
+                        type: 'GET',
+                        success: function (result) {
+                            flightPlan = result;
+                        },
+                        async: false
+                    });
                     var coords = [];
-                    for (let i = 0; i < data.segments.length; i++) {
-                        coords.push([data.segments[i].longitude, data.segments[i].latitude]);
+                    for (let i = 0; i < flightPlan.segments.length; i++) {
+                        coords.push([flightPlan.segments[i].longitude, flightPlan.segments[i].latitude]);
                         var polyline = L.polyline(coords, { color: 'red' }).addTo(shelterMarkers);
                         // zoom the map to the polyline
                         map.fitBounds(polyline.getBounds());
@@ -264,7 +273,7 @@
                             //click on airplane marker
                             marker.addEventListener("click", () => {
                                 removeEmphasis();
-                                showPath(JSON.parse(FlightPlan));
+                                showPath(data[i]["flight_id"]);
                                 // set marker icon
                                 marker.setIcon(myIcon2);
                                 document.getElementById("infoFlightdetails").innerHTML = "Flight id: " + data[i].flight_id + " company_name :" + data[i].company_name;
