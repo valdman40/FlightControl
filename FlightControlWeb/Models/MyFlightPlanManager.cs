@@ -14,23 +14,28 @@ namespace FlightControlWeb.Models
 {
     public class MyFlightPlanManager: IFlightPlanManager
     {
+        IDataManager DataMan;
+        public MyFlightPlanManager(IDataManager datamanager)
+        {
+            DataMan = datamanager;
+        }
         public FlightPlan getFlightPlan(string id)    
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
                 // get FlightPlan by id
-                string getQuery_fromFlightPlans = "SELECT * FROM FlightPlans WHERE ID ='" + id+"'";
-                var result = cnn.Query(getQuery_fromFlightPlans, new DynamicParameters());
+                string getQuery_fromFlightPlans = "SELECT * FROM FlightPlans WHERE ID ='" + id + "'";
+                // var result = cnn.Query(getQuery_fromFlightPlans, new DynamicParameters());
+                var result = DataMan.ExcuteQuery(getQuery_fromFlightPlans);
                 if (result.Count() == 0)
                 {
                     // this FlightPlan doesnt exist
                     return new FlightPlan() { };
                 }
 
-                var flightPlan = result.ToList()[0];
+                //var flightPlan = result.ToList()[0];
+                var flightPlan = result[0];
                 // get Initial_Location by flightPlan.Initial_Location_ID
                 string getQuery_fromInitialLocations = "SELECT Longitude,Latitude,Date FROM Initial_Locations WHERE ID ='" + flightPlan.Initial_Location_ID + "'";
-                var initialLocationOb = cnn.Query(getQuery_fromInitialLocations, new DynamicParameters()).ToList()[0];
+                var initialLocationOb = DataMan.ExcuteQuery(getQuery_fromInitialLocations)[0];
                 Initial_Location initial_Location = new Initial_Location()
                 {
                     latitude = initialLocationOb.Latitude,
@@ -40,7 +45,7 @@ namespace FlightControlWeb.Models
 
                 // get segments by id and create Segments list
                 string getQuery_fromSegments = "SELECT Longitude,Latitude,Timespan FROM Segments WHERE Flight_ID ='" + id + "'";
-                var allSegmentsOb = cnn.Query(getQuery_fromSegments, new DynamicParameters()).ToList();
+                var allSegmentsOb = DataMan.ExcuteQuery(getQuery_fromSegments);
                 List<Segment> segments = new List<Segment>();
                 foreach (var segmentOb in allSegmentsOb)
                 {
@@ -59,7 +64,7 @@ namespace FlightControlWeb.Models
                     initial_location = initial_Location,
                     segments = segments.ToArray()
                 };
-            }
+            
         }
 
         public void addFlightPlan(FlightPlan flightPlan)
@@ -73,23 +78,22 @@ namespace FlightControlWeb.Models
                 string dateString = "'"+initial_Location.date_time.ToString("yyyy-MM-ddTHH:mm:ssZ")+ "'";
                 string postQuery_Initial_Locations = "INSERT INTO Initial_Locations(Longitude, Latitude, Date)"+
                                                                   " VALUES(@longitude, @latitude, " + dateString + ")";
-                cnn.Execute(postQuery_Initial_Locations, initial_Location);
+                DataMan.ExcuteQuery(postQuery_Initial_Locations, initial_Location);
 
                 // post into FlightPlans table
                 string getQuery_extractInitialLocationID = "SELECT ID FROM Initial_Locations ORDER BY ID DESC LIMIT 1";
-                var x = cnn.Query(getQuery_extractInitialLocationID, new DynamicParameters());
+                var x = DataMan.ExcuteQuery(getQuery_extractInitialLocationID);
                 int lastIDFromInitialLocations = (int)x.ToList()[0].ID;
                 string postQuery_FlightPlans = "INSERT INTO FlightPlans(ID, Company, Passengers, Initial_Location_ID)" +
                                                                " VALUES('"+ uniqueID + "',@company_name, @passengers, " + lastIDFromInitialLocations + ")";
-                cnn.Execute(postQuery_FlightPlans, flightPlan);
-                
+                DataMan.ExcuteQuery(postQuery_FlightPlans, flightPlan);
                 // post into Segments table
                 string postQuery_Segment = "";
                 foreach(Segment segment in flightPlan.segments)
                 {
                     postQuery_Segment = "INSERT INTO Segments(Longitude, Latitude, TimeSpan, Flight_ID)" +
                                                      " VALUES(@longitude, @latitude, @timespan_seconds, '" + uniqueID + "')";
-                    cnn.Execute(postQuery_Segment, segment);
+                    DataMan.ExcuteQuery(postQuery_Segment, segment);
                 }
             }
         }

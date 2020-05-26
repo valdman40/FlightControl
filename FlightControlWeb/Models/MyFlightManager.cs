@@ -28,12 +28,12 @@ namespace FlightControlWeb.Models
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
 
-        private Initial_Location getLocation(DateTime giventime, string flightPlan_ID, int initialLocation_ID, IDbConnection cnn)
+        private Initial_Location getLocation(DateTime giventime, string flightPlan_ID, int initialLocation_ID)
         {
             string SegmentsQuery = "SELECT * FROM Segments WHERE Flight_ID = '" + flightPlan_ID + "'";
             string InitialLocQuery = "SELECT * FROM Initial_Locations WHERE ID = " + initialLocation_ID;
-            var rowsFromSegments = cnn.Query(SegmentsQuery, new DynamicParameters()).ToList();
-            var InitialLoc = cnn.Query(InitialLocQuery, new DynamicParameters()).ToList()[0];
+            var rowsFromSegments = DataMan.ExcuteQuery(SegmentsQuery);
+            var InitialLoc = DataMan.ExcuteQuery(InitialLocQuery)[0];
             List<Segment> segments = new List<Segment>();
             foreach (var row in rowsFromSegments)
             {
@@ -82,15 +82,14 @@ namespace FlightControlWeb.Models
 
         public List<Flight> GetInternalFlights(string date)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
+          
                 string query = "SELECT * FROM FlightPlans";
-                var rowsFromFlightPlans = cnn.Query(query, new DynamicParameters()).ToList();
+                var rowsFromFlightPlans = DataMan.ExcuteQuery(query);
                 List<Flight> internalFlights = new List<Flight>();
                 DateTime dt = DateTime.Parse(date);
                 foreach (var row in rowsFromFlightPlans)
                 {
-                    Initial_Location location = getLocation(dt, row.ID, (int)row.Initial_Location_ID, cnn);
+                    Initial_Location location = getLocation(dt, row.ID, (int)row.Initial_Location_ID);
                     if(location != null) // means that this FlightPlan is active
                     {
                         internalFlights.Add(new Flight()
@@ -107,7 +106,7 @@ namespace FlightControlWeb.Models
                     
                 }
                 return internalFlights;
-            }
+            
         }
 
         public  List<Flight> GetAllFlights(string date)
@@ -116,17 +115,15 @@ namespace FlightControlWeb.Models
 
             // get Flights from other servers and add to flightList
             var servers = (dynamic)null;
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
                 string query = "SELECT URL FROM Servers";
-                var result = cnn.Query(query, new DynamicParameters());
+                var result = DataMan.ExcuteQuery(query);
                 if (result.Count() == 0)
                 {
                     // doesnt have servers
                     return null;
                 }
                 servers = result.ToList();
-            }
+            
             foreach(var server in servers) // fetch from each server
             {
                 string uri = server.URL + "/api/Flights?relative_to=" + date;
@@ -161,31 +158,28 @@ namespace FlightControlWeb.Models
         // delete flight by id from 3 different tables: FlightPlans, Segments, Initial_Locations
         public void deleteFlight(string id)
         {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
+
                 // get initial location ID by flightplan's id from FlightPlans table
                 string getQuery_extractInitialLocationID = "SELECT Initial_Location_ID FROM FlightPlans WHERE ID = '" + id + "'";
-                var result = cnn.Query(getQuery_extractInitialLocationID, new DynamicParameters());
+                var result = DataMan.ExcuteQuery(getQuery_extractInitialLocationID);
                 if (result.Count() == 0)
                 {
                     // this Flight doesnt exist
                     return;
                 }
-                var initialLocationRow = result.ToList()[0];
+                var initialLocationRow = result[0];
                 int IDFromInitialLocations = (int)initialLocationRow.Initial_Location_ID;
 
                 // delete the row from FlightPlans table
                 string deleteFromFlightPlansQuery = "DELETE from FlightPlans WHERE ID = '" + id+ "'";
-               cnn.Query(deleteFromFlightPlansQuery, new DynamicParameters());
-
+                DataMan.ExcuteQuery(deleteFromFlightPlansQuery);
                 // delete the row from Segments table
                 string deleteFromSegmentsQuery = "DELETE from Segments WHERE Flight_ID = '" + id+ "'";
-                cnn.Query(deleteFromSegmentsQuery, new DynamicParameters());
-
+                DataMan.ExcuteQuery(deleteFromSegmentsQuery);
                 // delete the row from Initial_Locations table
                 string DeleteFromInitialLocQuery = "DELETE from Initial_Locations WHERE ID = " + IDFromInitialLocations;
-                cnn.Query(DeleteFromInitialLocQuery, new DynamicParameters());
-            }
+                DataMan.ExcuteQuery(DeleteFromInitialLocQuery);
+            
             
         }
 
