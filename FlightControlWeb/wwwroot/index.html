@@ -102,67 +102,67 @@
             <!FlightPlan json>
             <script>
                 let FlightPlan = `{
-                                                 "passengers": 216,
-                                                 "company_name": "SwissAir",
-                                                 "initial_location": {
-                                                 "longitude": 33.244,
-                                                 "latitude": 31.12,
-                                                 "date_time": "2020-12-26T23:56:21Z"
-                                                 },
-                                                 "segments": [
-                                                 {
-                                                 "longitude": 33.234,
-                                                 "latitude": 31.18,
-                                                 "timespan_seconds": 650
-                                                 },
-                                                 {
-                                                 "longitude": 35.66,
-                                                 "latitude": 36,
-                                                 "timespan_seconds": 650
-                                                 },
-                                                 {
-                                                 "longitude": 33.66,
-                                                 "latitude": 39,
-                                                 "timespan_seconds": 650
-                                                 },
-                                                 {
-                                                 "longitude": 70.66,
-                                                 "latitude": 31,
-                                                 "timespan_seconds": 650
-                                                 }
-                                                 ]
-                                                }`
+                                                             "passengers": 216,
+                                                             "company_name": "SwissAir",
+                                                             "initial_location": {
+                                                             "longitude": 33.244,
+                                                             "latitude": 31.12,
+                                                             "date_time": "2020-12-26T23:56:21Z"
+                                                             },
+                                                             "segments": [
+                                                             {
+                                                             "longitude": 33.234,
+                                                             "latitude": 31.18,
+                                                             "timespan_seconds": 650
+                                                             },
+                                                             {
+                                                             "longitude": 35.66,
+                                                             "latitude": 36,
+                                                             "timespan_seconds": 650
+                                                             },
+                                                             {
+                                                             "longitude": 33.66,
+                                                             "latitude": 39,
+                                                             "timespan_seconds": 650
+                                                             },
+                                                             {
+                                                             "longitude": 70.66,
+                                                             "latitude": 31,
+                                                             "timespan_seconds": 650
+                                                             }
+                                                             ]
+                                                            }`
             </script>
             <!Flights json>
             <script type="text/javascript">
                 let Flights =
                     `[{
-                                               "flight_id": "[1111]",
-                                               "longitude": 33.244,
-                                               "latitude": 38.12,
-                                               "passengers": 216,
-                                               "company_name": "SwissAir",
-                                               "date_time": "2020-12-26T23:56:21Z",
-                                               "is_external": false
-                                              },
-                                              {
-                                               "flight_id": "[2222]",
-                                               "longitude": 33.50,
-                                               "latitude": 31.66,
-                                               "passengers": 216,
-                                               "company_name": "SwissAir",
-                                               "date_time": "2020-12-26T23:56:21Z",
-                                               "is_external": false
-                                              },
-                                              {
-                                               "flight_id": "[3333]",
-                                               "longitude": 35.10,
-                                               "latitude": 39.66,
-                                               "passengers": 200,
-                                               "company_name": "SwissAir",
-                                               "date_time": "2020-10-26T23:56:21Z",
-                                               "is_external": false
-                                              }]`
+                                                           "flight_id": "[1111]",
+                                                           "longitude": 33.244,
+                                                           "latitude": 38.12,
+                                                           "passengers": 216,
+                                                           "company_name": "SwissAir",
+                                                           "date_time": "2020-12-26T23:56:21Z",
+                                                           "is_external": false
+                                                          },
+                                                          {
+                                                           "flight_id": "[2222]",
+                                                           "longitude": 33.50,
+                                                           "latitude": 31.66,
+                                                           "passengers": 216,
+                                                           "company_name": "SwissAir",
+                                                           "date_time": "2020-12-26T23:56:21Z",
+                                                           "is_external": false
+                                                          },
+                                                          {
+                                                           "flight_id": "[3333]",
+                                                           "longitude": 35.10,
+                                                           "latitude": 39.66,
+                                                           "passengers": 200,
+                                                           "company_name": "SwissAir",
+                                                           "date_time": "2020-10-26T23:56:21Z",
+                                                           "is_external": false
+                                                          }]`
             </script>
             <! style to mark a button filght click event>
             <style>
@@ -252,25 +252,25 @@
                     for (let i = 0; i < data.length; i++) {
                         let lon = data[i]["longitude"];
                         let lat = data[i]["latitude"];
-                        if (data[i]["flight_id"] in markerFlightsDict) {
-                            markerFlightsDict[data[i]["flight_id"]].setLatLng([lat, lon]);
-                        } else {
-                            let marker = L.marker([lat, lon], { icon: myIcon });
-                            marker.addTo(map);
-                            marker._leaflet_id = data[i].flight_id;
-                            map.addLayer(marker);
-                            //click on airplane marker
-                            marker.addEventListener("click", () => {
-                                removeEmphasis();
-                                showPath(data[i]["flight_id"]);
-                                // set marker icon
-                                marker.setIcon(myIcon2);
-                                document.getElementById("infoFlightdetails").innerHTML = "Flight id: " + data[i].flight_id + " company_name :" + data[i].company_name;
-                                // mark red
-                                // redFount(data[i].flight_id);
-                            });
-                            markerFlightsDict[data[i]["flight_id"]] = marker;
-                        }
+                        //  if (data[i]["flight_id"] in markerFlightsDict) {
+                        //  markerFlightsDict[data[i]["flight_id"]].setLatLng([lat, lon]);
+                        //} else {
+                        let marker = L.marker([lat, lon], { icon: myIcon });
+                        marker.addTo(map);
+                        marker._leaflet_id = data[i].flight_id;
+                        map.addLayer(marker);
+                        //click on airplane marker
+                        marker.addEventListener("click", () => {
+                            removeEmphasis();
+                            showPath(data[i]["flight_id"]);
+                            // set marker icon
+                            marker.setIcon(myIcon2);
+                            document.getElementById("infoFlightdetails").innerHTML = "Flight id: " + data[i].flight_id + " company_name :" + data[i].company_name;
+                            // mark red
+                            // redFount(data[i].flight_id);
+                        });
+                        markerFlightsDict[data[i]["flight_id"]] = marker;
+                        // }
                     }
                     // call to drew flights as buttons
                     console.log('data: ');
@@ -378,8 +378,7 @@
                             dt.setSeconds(dt.getSeconds() + 4);
                             DrawIcons(Flights);
                             CloseButtonClicked();
-                            setTimeout(function ()
-                            {
+                            setTimeout(function () {
                                 clearFlights();
                                 recoursiveAjaxRequest()
                             }, 4000)
@@ -388,9 +387,9 @@
                 }
 
                 recoursiveAjaxRequest();
-                function clearFlights()
-                {
+                function clearFlights() {
                     $('ul li').remove();
+                    markerFlightsDict = {};
                     var x = document.getElementsByTagName("li");
                     document.getElementById("infoFlightdetails").innerHTML = "";
                     //alert(x.length);
