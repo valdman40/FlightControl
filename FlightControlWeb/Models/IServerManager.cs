@@ -9,7 +9,7 @@ namespace FlightControlWeb.Models
     public interface IServerManager
     {
         List<Server> getServers();
-        void postServer(Server server);
+        List<dynamic> postServer(Server server);
 
         void deleteServer(string id);
     }

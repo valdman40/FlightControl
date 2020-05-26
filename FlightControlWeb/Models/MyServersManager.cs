@@ -32,12 +32,14 @@ namespace FlightControlWeb.Models
             
         }
 
-        public void postServer(Server server)
+        public List<dynamic> postServer(Server server)
         {
 
                 string postQuery_Server = "INSERT INTO Servers(ID,URL)" +
                                                   " VALUES(@ID, @URL)";
-            DataMan.ExcuteQuery(postQuery_Server, server);
+           
+            var x = DataMan.ExcuteQuery(postQuery_Server, server);
+            return x;
 
         }
 
@@ -49,7 +51,8 @@ namespace FlightControlWeb.Models
         public void deleteServer(string id)
         {
 
-            string deleteQuery = "DELETE from Servers WHERE ID = '" + id+"'";
+                string deleteQuery = "DELETE from Servers WHERE ID = '" + id+"'";
+
             DataMan.ExcuteQuery(deleteQuery);
             
         }
