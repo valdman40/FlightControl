@@ -8,7 +8,7 @@ namespace FlightControlWeb.Models
 {
     public interface IFlightManager
     {
-        List<Flight> GetAllFlights(string date);
+        Task<List<Flight>> GetAllFlights(string date);
         List<Flight> GetInternalFlights(string date);
         void deleteFlight(string id);
     }
