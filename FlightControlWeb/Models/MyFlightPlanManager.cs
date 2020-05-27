@@ -67,12 +67,10 @@ namespace FlightControlWeb.Models
             
         }
 
-        public void addFlightPlan(FlightPlan flightPlan)
+        public FlightPlan addFlightPlan(FlightPlan flightPlan)
         {
             // generate ID function
             string uniqueID = generateUniqueID(flightPlan.company_name);
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
                 // post into Initial_Locations table
                 Initial_Location initial_Location = flightPlan.initial_location;
                 string dateString = "'"+initial_Location.date_time.ToString("yyyy-MM-ddTHH:mm:ssZ")+ "'";
@@ -95,7 +93,7 @@ namespace FlightControlWeb.Models
                                                      " VALUES(@longitude, @latitude, @timespan_seconds, '" + uniqueID + "')";
                     DataMan.ExcuteQuery(postQuery_Segment, segment);
                 }
-            }
+            return flightPlan;
         }
 
         // generates unique id with addition letters from stringBase

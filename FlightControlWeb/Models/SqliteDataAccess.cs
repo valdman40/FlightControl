@@ -34,6 +34,9 @@ namespace FlightControlWeb
 
         }
 
+
+
+
         public List<dynamic> ExcuteQuery<T>(string QueryString, T genericObject)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))

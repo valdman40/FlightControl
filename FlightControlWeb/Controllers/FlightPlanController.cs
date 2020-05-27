@@ -28,9 +28,9 @@ namespace FlightControlWeb.Controllers
 
         // POST: api/FlightPlan 
         [HttpPost]
-         public void Post([FromBody] FlightPlan flightPlan)
+         public FlightPlan Post([FromBody] FlightPlan flightPlan)
         {
-            fpManager.addFlightPlan(flightPlan);
+           return fpManager.addFlightPlan(flightPlan);
         }
     }
 }
