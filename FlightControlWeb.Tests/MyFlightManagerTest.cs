@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Autofac.Extras.Moq;
@@ -7,12 +8,15 @@ using FlightControlWeb;
 using FlightControlWeb.Controllers;
 using FlightControlWeb.Models;
 using FlightControlWeb.Types;
+using Moq;
 using Xunit;
 
 namespace FlightControlWeb.Tests
 {
     public class MyFlightManagerTest
     {
+        private Mock<IFlightPlanManager> fpm { get; set; }
+        private Mock<IDataManager> data { get; set; }
         [Fact]
         public void _postServerTest()
         {
@@ -37,13 +41,22 @@ namespace FlightControlWeb.Tests
 
             }
     }
+
+        private List<dynamic> getSampleServerList()
+        {
+            List<dynamic> output = new List<dynamic>
+            {
+               new Server() { ID = "test", URL = "test" }
+            };
+
+            return output;
+        }
+
         [Fact]
         public void _getServersTest()
         {
             using (var mock = AutoMock.GetLoose())
             {
-              //  Server y = new Server() { ID = "test", URL = "test" };
-
                 mock.Mock<IDataManager>()
                 .Setup(x => x.ExcuteQuery("SELECT * FROM Servers")).Returns(getSampleServerList2);
                 var cls = mock.Create<MyServersManager>();
@@ -56,18 +69,29 @@ namespace FlightControlWeb.Tests
                     Assert.Equal(expected[i].ID, actual[i].ID);
                     Assert.Equal(expected[i].URL, actual[i].URL);
                 }
-
             }
         }
-        private List<dynamic> getSampleServerList()
-        {
-            List<dynamic> output = new List<dynamic>
-            {
-               new Server() { ID = "test", URL = "test" }
-            };
         
-            return output;
+        [Fact]
+
+        public void _FlightPlanControllerGetTest()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                var x = new Mock<IFlightPlanManager>();
+                x.Setup(x => x.getFlightPlan("123")).Returns(new FlightPlan() { company_name = "sd" });
+                FlightPlanController f = new FlightPlanController(x.Object);
+                var actual=f.Get("123");
+                var expected = new FlightPlan() { company_name = "sd" };
+                Assert.True(actual != null);
+                Assert.Equal(expected.company_name, actual.company_name);
+            }
         }
+
+       
+     
+        
+        
         private List<dynamic> getSampleServerList2()
         {
             List<dynamic> output = new List<dynamic>
