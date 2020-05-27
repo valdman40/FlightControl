@@ -43,12 +43,9 @@ namespace FlightControlWeb.Tests
             using (var mock = AutoMock.GetLoose())
             {
               //  Server y = new Server() { ID = "test", URL = "test" };
-                mock.Mock<IDataManager>()
-                    .Setup(x => x.ExcuteQuery("SELECT * FROM Server")).Returns(getSampleServerList2());
-                mock.Mock<IDataManager>()
-    .Setup(x => x.ExcuteQuery("SELECT * FROM Servers")).Returns(getSampleServerList);
 
-
+                mock.Mock<IDataManager>()
+                .Setup(x => x.ExcuteQuery("SELECT * FROM Servers")).Returns(getSampleServerList2);
                 var cls = mock.Create<MyServersManager>();
                 var expected = getSampleServerList2();
                 var actual = cls.getServers();

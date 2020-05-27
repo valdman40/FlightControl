@@ -21,7 +21,7 @@ namespace FlightControlWeb.Models
 
         {
 
-                string query = "SELECT * FROM Server";
+                string query = "SELECT * FROM Servers";
                 var servers = DataMan.ExcuteQuery(query);
             List<dynamic> output = new List<dynamic>();
                 foreach(var serverVar in servers)
