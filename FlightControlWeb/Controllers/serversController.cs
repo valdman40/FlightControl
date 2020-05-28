@@ -7,6 +7,7 @@ using FlightControlWeb.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace FlightControlWeb.Controllers
 {
     [Route("api/[controller]")]
@@ -30,16 +31,27 @@ namespace FlightControlWeb.Controllers
         // POST: api/servers
         // info in post body
         [HttpPost]
-        public void Post([FromBody] Server newServer)
-        {
-            sManager.postServer(newServer);
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult Post([FromBody] Server newServer)
+        {            
+            try{
+                sManager.postServer(newServer);
+                return Ok();
+            }
+            catch (System.Data.SQLite.SQLiteException)
+            {
+                return BadRequest("ID Alread in DB");
+            }
+            
         }
 
         // DELETE: api/servers/{id}
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public ActionResult Delete(string id)
         {
             sManager.deleteServer(id);
+            return Ok();
         }
     }
 }

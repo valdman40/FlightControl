@@ -23,7 +23,14 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}")]
         public ActionResult<FlightPlan> Get(string id)
         {
-            return fpManager.getFlightPlan(id).Result;
+            try
+            {
+                return Ok(fpManager.getFlightPlan(id).Result);
+            }
+            catch (System.AggregateException)
+            {
+                return BadRequest("no such FlightPlan");
+            }
         }
 
         // POST: api/FlightPlan 
