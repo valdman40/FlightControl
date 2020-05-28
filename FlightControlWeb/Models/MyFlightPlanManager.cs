@@ -9,6 +9,8 @@ using FlightControlWeb.Types;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.Net.Http;
 
 namespace FlightControlWeb.Models
 {
@@ -19,7 +21,7 @@ namespace FlightControlWeb.Models
         {
             DataMan = datamanager;
         }
-        public FlightPlan getFlightPlan(string id)    
+         public async Task<FlightPlan> getFlightPlan(string id)    
         {
                 // get FlightPlan by id
                 string getQuery_fromFlightPlans = "SELECT * FROM FlightPlans WHERE ID ='" + id + "'";
@@ -27,8 +29,49 @@ namespace FlightControlWeb.Models
                 var result = DataMan.ExcuteQuery(getQuery_fromFlightPlans);
                 if (result.Count() == 0)
                 {
-                    // this FlightPlan doesnt exist
-                    return new FlightPlan() { };
+                // this FlightPlan doesnt exist In DB - We will try find it in external servers
+
+
+                var servers = (dynamic)null;
+                string query = "SELECT URL FROM Servers";
+                var results_servers = DataMan.ExcuteQuery(query);
+                if (results_servers.Count() == 0)
+                {
+                    // doesnt have servers
+                    return null;
+                }
+                servers = results_servers.ToList();
+
+                foreach (var server in servers) // fetch from each server
+                {
+                    string uri = server.URL + "/api/FlightPlan/" + id;
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                    HttpClient client = new HttpClient();
+
+                    HttpResponseMessage response = await client.GetAsync(uri);
+                    response.EnsureSuccessStatusCode();
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    try
+                    {
+                        if (response.IsSuccessStatusCode && !responseBody.Contains("fail"))
+                        {
+                            // get all flights into list and then copy the elements into flightList
+                            FlightPlan externalFlightPlan = Newtonsoft.Json.JsonConvert.DeserializeObject<FlightPlan>(responseBody);
+                            return externalFlightPlan;
+                        }
+                    }
+                    catch (HttpRequestException e)
+                    {
+                        Console.WriteLine(e);
+                    }
+
+                    client.Dispose();
+
+                }
+
+
+                
                 }
 
                 //var flightPlan = result.ToList()[0];
