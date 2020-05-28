@@ -30,7 +30,7 @@ $(document).ready(function () {
         removeEmphasis();
     });
     function calculateEndTime(dateAndTime, FlightPlan) {
-        var date = new Date(dateAndTime);
+        let date = new Date(dateAndTime);
         let timespan_seconds = 0;
         for (let i = 0; i < FlightPlan.segments.length; i++) {
             timespan_seconds += FlightPlan.segments[i].timespan_seconds;
@@ -39,11 +39,11 @@ $(document).ready(function () {
         date.setSeconds(date.getSeconds() + timespan_seconds);
 
 
-        var set = date.getSeconds();
+        let set = date.getSeconds();
         console.log(set);
 
 
-        var resEndTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+        let resEndTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
         console.log(resEndTime);
         return resEndTime;
 
