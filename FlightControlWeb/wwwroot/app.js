@@ -123,7 +123,7 @@ $(document).ready(function () {
 
 
 
-    let date = new Date('2019-05-20T21:27:07Z');
+    let date = new Date('2020-05-27T14:56:00Z');
     function giveMeByTime() {
         $.ajax({
             url: `../api/Flights?relative_to=${date}`,
@@ -154,8 +154,9 @@ $(document).ready(function () {
         map.addLayer(shelterMarkers);
         let flightPlan = getFlightsPlan(flightID);
         let coords = [];
+        coords.push([flightPlan.initial_location.latitude, flightPlan.initial_location.longitude]);
         for (let i = 0; i < flightPlan.segments.length; i++) {
-            coords.push([flightPlan.segments[i].longitude, flightPlan.segments[i].latitude]);
+            coords.push([flightPlan.segments[i].latitude, flightPlan.segments[i].longitude]);
             let polyline = L.polyline(coords, { color: 'red' }).addTo(shelterMarkers);
             // zoom the map to the polyline
             ///map.fitBounds(polyline.getBounds());
@@ -274,12 +275,12 @@ $(document).ready(function () {
             item.parentElement.style.display = "none";
         });
     });
-    //2018-06-25T17:26:45Z
-    let dt = new Date("25 June 2018 17:26:45 UTC");
+    //2018-06-25T17:26:41Z
+    let dt = new Date("25 June 2018 17:26:38 UTC");
     function recoursiveAjaxRequest() {
         let date = dt.toISOString();
         $.ajax({
-            url: `../api/Flights?relative_to=${date}`,
+            url: `../api/Flights?relative_to=${date}&sync_all`,
             type: 'GET',
             success: function (result) {
                 Flights = result;
