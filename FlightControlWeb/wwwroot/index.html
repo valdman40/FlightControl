@@ -1,9 +1,25 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.4.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
     <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <title>WEB</title>
-    <link rel="stylesheet" type="text/css" href="css/index.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
           integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
           crossorigin="" />
@@ -13,22 +29,17 @@
     <script defer src="app.js"></script>
     <style>
         body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Century Gothic;
         }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
+        .map {
+            margin: 4px;
+            border: 3px solid red;
+            height: 500px;
         }
 
             ul li {
                 border: 1px solid rgb(100, 100, 100);
-                background-color: #5a5cec;
+                background-color: lightsteelblue;
                 color: white;
                 padding: 12px;
                 text-decoration: none;
@@ -39,7 +50,7 @@
             }
 
                 ul li:hover {
-                    background-color: rgb(43, 0, 145);
+                    background-color: lightblue;
                 }
 
         .close {
@@ -47,39 +58,92 @@
             position: absolute;
             top: 50%;
             right: 0%;
-            padding: 12px 16px;
+            padding: 6px 6px;
             transform: translate(0%, -50%);
         }
-        .close:hover {
-            background: red;
-        }
-    </style>
-    <style>
+            .close:hover {
+                background: red;
+            }
         .markButtonClass {
+            background-color: lightblue;
             color: red;
+            font-size: 22px;
         }
+
+
+
     </style>
 </head>
-<body>
-    <div class="wrapper">
-        <div id="map"></div>
-        <div class="Title">
-            Live Flights Control
-        </div>
-        <div class="InternalFlights">
-            <h1>Internal Flights</h1>
-            <ul id="flightsButtons">
-            </ul>
-        </div>
-        <div class="ExternalFlights">External Flights</div>
-        <div class="FlightDetails">
-            Flight Details
-            <! defines a paragraph to clilck event to show details>
-            <div>
-                <p id="infoFlightdetails"></p>
+<body style="background-color:aliceblue">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">
+                    Live Flight Control
+                </h1>
             </div>
         </div>
+        <div class="row firstrow">
+            <div class="colmap col-md-8">
+                <div id="map" class="map">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="InternalFlights text-center">
+                    <h2>Internal Flights</h2>
+                    <ul id="flightsButtons" class=list-group>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="FlightDetails text-center">
+                    <h3>Flight Details:</h3>
+
+                    <table style="background-color:lightsteelblue" class="table table-hover table-bordered" id="infoFlightdetails">
+                        <tr>
+                            <th style="width:50%" scope="col">Company</th>
+                            <td id="company"> </td>
+                        </tr>
+                        <tr>
+                            <th style="width:50%" scope="row">Passengers</th>
+                            <td id="passengers"> </td>
+                        </tr>
+                        <tr>
+                            <th style="width:50%" scope="row">Take off time</th>
+                            <td id="starttime"> </td>
+                        </tr>
+                        <tr>
+                            <th style="width:50%" scope="row">Landing time</th>
+                            <td id="endtime"> </td>
+                        </tr>
+                        <tr>
+                            <th style="width:50%" scope="row">Take off location</th>
+                            <td id="startloc"> </td>
+                        </tr>
+                        <tr>
+                            <th style="width:50%" scope="row">Landing location</th>
+                            <td id="endloc"> </td>
+                        </tr>
+                        <tr>
+                            <th style="width:50%" scope="row">Origin</th>
+                            <td id="origin"> </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-6 text-center">
+                <button type="button" class="btn btn-success btn-block">
+                    Button
+                </button>
+            </div>
+        </div>
+
     </div>
+
 </body>
 </html>
 

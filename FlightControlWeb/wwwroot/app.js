@@ -14,7 +14,7 @@ $(document).ready(function () {
         // iconAnchor: [1, 24],
         popupAnchor: [-3, -76],
     });
-    let map = L.map('map', { minZoom: 1, }).setView([33, 31], 2);
+    let map = L.map('map', { minZoom: 3, }).setView([33, 31], 2);
     mapLink =
         '<a href="http://openstreetmap.org">OpenStreetMap</a>';
     L.tileLayer(
@@ -22,15 +22,17 @@ $(document).ready(function () {
         attribution: '&copy; ' + mapLink + ' Contributors',
         maxZoom: 18,
     }).addTo(map);
+
     L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=dwAzStO5BTv3oNPggfCv', {
         attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
     }).addTo(map);
+
     setTimeout(function () { map.invalidateSize() }, 10);
     map.on('click', function () {
         removeEmphasis();
     });
     function calculateEndTime(dateAndTime, FlightPlan) {
-        let date = new Date(dateAndTime);
+        var date = new Date(dateAndTime);
         let timespan_seconds = 0;
         for (let i = 0; i < FlightPlan.segments.length; i++) {
             timespan_seconds += FlightPlan.segments[i].timespan_seconds;
@@ -39,11 +41,11 @@ $(document).ready(function () {
         date.setSeconds(date.getSeconds() + timespan_seconds);
 
 
-        let set = date.getSeconds();
+        var set = date.getSeconds();
         console.log(set);
 
 
-        let resEndTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+        var resEndTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
         console.log(resEndTime);
         return resEndTime;
 
@@ -64,14 +66,16 @@ $(document).ready(function () {
         let final_location = "longitude: " + final_log + "   latitude: " + final_lat;
         let company_name = Flight[i].company_name;
         if (flagIsExternal) {
-            document.getElementById("infoFlightdetails").innerHTML = "EXTERMAL" + "<br />" + "Company: " + company_name + "<br />" + "Passengers: " + passengers + "<br />" +
-                " Start:" + start_time + "   End:" + end_time + "<br />" + "Initial_location - " + initial_location + "<br />" +
-                "Final_location- " + final_location;
+            document.getElementById("origin").innerHTML = "external flight";
         } else {
-            document.getElementById("infoFlightdetails").innerHTML = "Company: " + company_name + "<br />" + "Passengers: " + passengers + "<br />" +
-                " Start:" + start_time + "   End:" + end_time + "<br />" + "Initial_location - " + initial_location + "<br />" +
-                "Final_location- " + final_location;
+            document.getElementById("origin").innerHTML = "internal flight";
         }
+        document.getElementById("company").textContent = company_name;
+        document.getElementById("passengers").textContent = passengers;
+        document.getElementById("starttime").textContent = start_time;
+        document.getElementById("endtime").textContent = end_time;
+        document.getElementById("startloc").textContent = initial_location;
+        document.getElementById("endloc").textContent = final_location;
     }
     function ListCreator(data) {
         let ul = document.getElementById("flightsButtons");
@@ -123,7 +127,7 @@ $(document).ready(function () {
 
 
 
-    let date = new Date('2020-05-27T14:56:00Z');
+    let date = new Date('2019-05-20T21:27:07Z');
     function giveMeByTime() {
         $.ajax({
             url: `../api/Flights?relative_to=${date}`,
@@ -214,7 +218,8 @@ $(document).ready(function () {
     }
     function removeEmphasis() {
         let liButton = document.getElementsByTagName("li");
-        document.getElementById("infoFlightdetails").innerHTML = "";
+        ClearTable();
+        ///////////////document.getElementById("infoFlightdetails").innerHTML = "";
         isPressedId = '';
         for (let i = 0; i < liButton.length; i++) {
             liButton[i].isPressed = false;
@@ -227,6 +232,18 @@ $(document).ready(function () {
             map.removeLayer(shelterMarkers); // remove segments
         }
     }
+
+    function ClearTable() {
+        document.getElementById("company").textContent = "";
+        document.getElementById("passengers").textContent = "";
+        document.getElementById("starttime").textContent = "";
+        document.getElementById("endtime").textContent = "";
+        document.getElementById("startloc").textContent = "";
+        document.getElementById("endloc").textContent = "";
+        document.getElementById("origin").innerHTML = "";
+    }
+
+
 
     function CloseButtonClicked() {
         let close = document.getElementsByClassName("close");
@@ -275,12 +292,12 @@ $(document).ready(function () {
             item.parentElement.style.display = "none";
         });
     });
-    //2018-06-25T17:26:41Z
-    let dt = new Date("25 June 2018 17:26:38 UTC");
+    //2018-06-25T17:26:45Z
+    let dt = new Date("25 June 2018 17:26:45 UTC");
     function recoursiveAjaxRequest() {
         let date = dt.toISOString();
         $.ajax({
-            url: `../api/Flights?relative_to=${date}&sync_all`,
+            url: `../api/Flights?relative_to=${date}`,
             type: 'GET',
             success: function (result) {
                 Flights = result;
