@@ -119,53 +119,60 @@ namespace FlightControlWeb.Models
             var servers = (dynamic)null;
                 string query = "SELECT URL FROM Servers";
                 var result = DataMan.ExcuteQuery(query);
-                if (result.Count() == 0)
+                if (result.Count() != 0)
                 {
-                    // doesnt have servers
-                    return null;
-                }
                 servers = result.ToList();
-            
-            foreach(var server in servers) // fetch from each server
-            {
-                string uri = server.URL + "/api/Flights?relative_to=" + date;
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-                HttpClient client = new HttpClient();
 
-                HttpResponseMessage response = await client.GetAsync(uri);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                try
+                foreach (var server in servers) // fetch from each server
                 {
-                    if (response.IsSuccessStatusCode && !responseBody.Contains("fail"))
+                    string uri = server.URL + "/api/Flights?relative_to=" + date;
+
+                    HttpClient client = new HttpClient();
+
+
+                    try
                     {
-                        // get all flights into list and then copy the elements into flightList
-                        List<Flight> externalFlights = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Flight>>(responseBody);
-                        DateTime dt = DateTime.Parse(date);
-                        foreach (var exFlight in externalFlights)
+                        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+
+                        HttpResponseMessage response = await client.GetAsync(uri);
+                        response.EnsureSuccessStatusCode();
+                        string responseBody = await response.Content.ReadAsStringAsync();
+                        if (response.IsSuccessStatusCode && !responseBody.Contains("fail"))
                         {
-                            flightList.Add(new Flight()
+                            // get all flights into list and then copy the elements into flightList
+                            List<Flight> externalFlights = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Flight>>(responseBody);
+                            DateTime dt = DateTime.Parse(date);
+                            foreach (var exFlight in externalFlights)
                             {
-                                flight_id = exFlight.flight_id,
-                                latitude = exFlight.latitude,
-                                longitude = exFlight.longitude,
-                                passengers = exFlight.passengers,
-                                company_name = exFlight.company_name,
-                                date_time = dt,
-                                is_external = true
-                            });
+                                flightList.Add(new Flight()
+                                {
+                                    flight_id = exFlight.flight_id,
+                                    latitude = exFlight.latitude,
+                                    longitude = exFlight.longitude,
+                                    passengers = exFlight.passengers,
+                                    company_name = exFlight.company_name,
+                                    date_time = dt,
+                                    is_external = true
+                                });
+                            }
                         }
                     }
-                }
-                catch (HttpRequestException e)
-                {
-                    Console.WriteLine(e);
-                }
+                    catch (HttpRequestException e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                    catch(UriFormatException e)
+                    {
+                        Console.WriteLine(e);
+                    }
 
-                client.Dispose();
-                
+                    client.Dispose();
+
+                }
+                // doesnt have servers
+                //         return null;
             }
+       
             return flightList;
         }
 

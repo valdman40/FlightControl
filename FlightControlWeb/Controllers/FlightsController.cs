@@ -24,7 +24,7 @@ namespace FlightControlWeb.Controllers
         // return all flights (if sync_all is part of the args, return include external)
         [HttpGet]
         public ActionResult<List<Flight>> GetAllFlights()
-        {
+        {   
             if (Request.Query.ContainsKey("sync_all"))
               {
              return fManager.GetAllFlights(Request.Query["relative_to"]).Result; // date located at Request.Query["relative_to"]
