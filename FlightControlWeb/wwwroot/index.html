@@ -168,7 +168,10 @@
                             fail: function (xhr, textStatus, errorThrown) {
                                 alert('failed' + errorThrown);
                             }
+                        }).fail(function (data) {
+                            alert(data.status + data.responseJSON.title);
                         });
+                        
                     }
                 </script>
 
