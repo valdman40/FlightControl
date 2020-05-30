@@ -19,7 +19,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
     <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <title>WEB</title>
+    <title>Flight control</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
           integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
           crossorigin="" />
@@ -33,7 +33,7 @@
         }
         .map {
             margin: 4px;
-            border: 3px solid red;
+            border: 3px solid lightsteelblue;
             height: 500px;
         }
 
@@ -134,16 +134,48 @@
                     </table>
                 </div>
             </div>
+            <div class="col-md-1"> </div>
+            <div class="col-md-5">
+                <div class="row" style="height:50px"></div>
+                <input type="file" onchange="readFile(this)">
 
-            <div class="col-md-6 text-center">
-                <button type="button" class="btn btn-success btn-block">
-                    Button
-                </button>
+                <script>
+                    function readFile(input) {
+                        let file = input.files[0];
+
+                        let reader = new FileReader();
+
+                        reader.readAsText(file);
+
+                        reader.onload = function () {
+                            console.log(reader.result);
+                            var myJSON = JSON.parse(reader.result);
+                            //var myJSON = JSON.stringify(reader.result);
+                            alert(myJSON);
+                            add(reader.result);
+                        };
+                        reader.onerror = function () {
+                            console.log(reader.error);
+                        };
+                    }
+                    function add(json) {
+                        $.ajax({
+                            url: `/api/FlightPlan`,
+                            type: 'POST',
+                            body: json,
+                            success: function (result) {
+                                alert('success');
+                            },
+                            fail: function (xhr, textStatus, errorThrown) {
+                                alert('failed' + errorThrown);
+                            }
+                        });
+                    }
+                </script>
+
             </div>
         </div>
-
     </div>
-
 </body>
 </html>
 
