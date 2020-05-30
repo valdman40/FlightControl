@@ -136,21 +136,18 @@
             <div class="col-md-1"> </div>
             <div class="col-md-5">
                 <div class="row" style="height:50px"></div>
-                <input type="file" onchange="readFile(this)">
+                <input id="fileinput" type="file" onchange="readFile(this)">
                 <script>
                     function readFile(input) {
                         let file = input.files[0];
-
                         let reader = new FileReader();
-
                         reader.readAsText(file);
-
                         reader.onload = function () {
-                            console.log(reader.result);
                             var myJSON = JSON.parse(reader.result);
                             AddFlight(myJSON);
                         };
                         reader.onerror = function () {
+                            alert(reader.error);
                             console.log(reader.error);
                         };
                     }
