@@ -75,7 +75,6 @@
     </style>
 </head>
 <body style="background-color:aliceblue">
-
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -91,7 +90,7 @@
             </div>
             <div class="col-md-4">
                 <div class="InternalFlights text-center">
-                    <h2>Internal Flights</h2>
+                    <h2>All Flights</h2>
                     <ul id="flightsButtons" class=list-group>
                     </ul>
                 </div>
@@ -138,6 +137,40 @@
             <div class="col-md-5">
                 <div class="row" style="height:50px"></div>
                 <input type="file" onchange="readFile(this)">
+                <script>
+                    function readFile(input) {
+                        let file = input.files[0];
+
+                        let reader = new FileReader();
+
+                        reader.readAsText(file);
+
+                        reader.onload = function () {
+                            console.log(reader.result);
+                            var myJSON = JSON.parse(reader.result);
+                            AddFlight(myJSON);
+                        };
+                        reader.onerror = function () {
+                            console.log(reader.error);
+                        };
+                    }
+                    function AddFlight(json) {
+                        $.ajax({
+                            url: `../api/FlightPlan`,
+                            type: "POST",
+                            contentType: 'application/json; charset=UTF-8',
+                            data: JSON.stringify(json),
+                            success: function (result) {
+                                alert('success');
+                            },
+                            fail: function (xhr, textStatus, errorThrown) {
+                                alert('failed' + errorThrown);
+                            }
+                        }).fail(function (data) {
+                            alert(data.status + data.responseJSON.title);
+                        });
+                    }
+                </script>
             </div>
         </div>
     </div>

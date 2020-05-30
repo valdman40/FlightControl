@@ -81,7 +81,7 @@ $(document).ready(function () {
         let ul = document.getElementById("flightsButtons");
         for (let i = 0; i < data.length; i++) {
             let li = document.createElement("li");
-            li.appendChild(document.createTextNode("Flight" + data[i].flight_id + " " + data[i].company_name));
+
             //List that can be closed using x
             let span = document.createElement("SPAN");
             let txt = document.createTextNode("x");
@@ -93,6 +93,10 @@ $(document).ready(function () {
             // if its not external - add option to remove using x
             if (data[i].is_external === false) {
                 li.appendChild(span);
+                li.appendChild(document.createTextNode("Flight: " + data[i].flight_id + " " + data[i].company_name));
+            }
+            else {
+                li.appendChild(document.createTextNode("Extrnal flight: " + data[i].flight_id + " " + data[i].company_name));
             }
             //if this flight is pressed - so mark red
             if (isPressedId === data[i].flight_id) {
@@ -260,7 +264,7 @@ $(document).ready(function () {
                 if (div.isPressed === false) { // so we want to delete a flight
                     map.removeLayer(markerFlightsDict[String(div.id)]);
                     div.style.display = "none";
-                    deleteElement(div.id);
+                    DeleteFlight(div.id);
                 }
                 else {  // so we want to unmark a flight
                     removeEmphasis();
@@ -269,7 +273,7 @@ $(document).ready(function () {
             }
         }
     }
-    function deleteElement(inputID) {
+    function DeleteFlight(inputID) {
         console.log(inputID);
         $.ajax({
             url: `../api/Flights/${inputID}`,
@@ -327,39 +331,6 @@ $(document).ready(function () {
             map.removeLayer(markerFlightsDict[String(x[i].id)]);
             //x[i].style.display = "none";
         }
-    }
-
-    function readFile(input) {
-        let file = input.files[0];
-
-        let reader = new FileReader();
-
-        reader.readAsText(file);
-
-        reader.onload = function () {
-            console.log(reader.result);
-            var myJSON = JSON.parse(reader.result);
-            add(myJSON);
-        };
-        reader.onerror = function () {
-            console.log(reader.error);
-        };
-    }
-    function add(json) {
-        $.ajax({
-            url: `../api/FlightPlan`,
-            type: "POST",
-            contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify(json),
-            success: function (result) {
-                alert('success');
-            },
-            fail: function (xhr, textStatus, errorThrown) {
-                alert('failed' + errorThrown);
-            }
-        }).fail(function (data) {
-            alert(data.status + data.responseJSON.title);
-        });
     }
 
 });
