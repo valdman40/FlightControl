@@ -150,9 +150,7 @@
                         reader.onload = function () {
                             console.log(reader.result);
                             var myJSON = JSON.parse(reader.result);
-                            //var myJSON = JSON.stringify(reader.result);
-                            alert(myJSON);
-                            add(reader.result);
+                            add(myJSON);
                         };
                         reader.onerror = function () {
                             console.log(reader.error);
@@ -160,9 +158,10 @@
                     }
                     function add(json) {
                         $.ajax({
-                            url: `/api/FlightPlan`,
-                            type: 'POST',
-                            body: json,
+                            url: `../api/FlightPlan`,
+                            type: "POST",
+                            contentType: 'application/json; charset=UTF-8',
+                            data: JSON.stringify(json),
                             success: function (result) {
                                 alert('success');
                             },
