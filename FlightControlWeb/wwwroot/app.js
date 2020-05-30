@@ -50,7 +50,7 @@ $(document).ready(function () {
         return resEndTime;
 
     }
-    function writeFlightsDetails(FlightPlan, Flight, i, flagIsExternal) {
+    function writeFlightsDetails(FlightPlan, flagIsExternal) {
 
         let passengers = FlightPlan.passengers;
         let segments_len = FlightPlan.segments.length;
@@ -64,8 +64,8 @@ $(document).ready(function () {
         let final_log = FlightPlan.segments[segments_len - 1].longitude;
         let final_lat = FlightPlan.segments[segments_len - 1].latitude;
         let final_location = "longitude: " + final_log + "   latitude: " + final_lat;
-        let company_name = Flight[i].company_name;
-        if (flagIsExternal) {
+        let company_name = FlightPlan.company_name;
+        if (flagIsExternal === 1) {
             document.getElementById("origin").innerHTML = "external flight";
         } else {
             document.getElementById("origin").innerHTML = "internal flight";
@@ -111,12 +111,12 @@ $(document).ready(function () {
         isPressedId = data[i].flight_id;
         let flights_plan = getFlightsPlan(data[i].flight_id);
         // data is Fligt js
-        if (data[i].is_external === false) {
+        if (data[i].is_external === true) {
             //document.getElementById("infoFlightdetails").innerHTML = "Flight id: " + data[i].flight_id + " company_name :" + data[i].company_name;
-            writeFlightsDetails(flights_plan, data, i, 0);
+            writeFlightsDetails(flights_plan, 1);
         } else { // its external flight
             //document.getElementById("infoFlightdetails").innerHTML = "External: " + " Flight id:" + data[i].flight_id + " company_name :" + data[i].company_name;
-            writeFlightsDetails(flights_plan, data, i, 1);
+            writeFlightsDetails(flights_plan, 0);
         }
 
         showPath(data[i]["flight_id"], flights_plan);
@@ -201,7 +201,12 @@ $(document).ready(function () {
         marker.setIcon(activeIcon);
         let flights_plan = getFlightsPlan(data[i].flight_id);
         showPath(data[i]["flight_id"], flights_plan);
-        writeFlightsDetails(flights_plan, data, i);
+        if (data[i].is_external === true) {
+            writeFlightsDetails(flights_plan, 1);
+        }
+        else {
+            writeFlightsDetails(flights_plan, 0);
+        }
         // mark red
         redFount(data[i].flight_id);
     }
@@ -323,4 +328,38 @@ $(document).ready(function () {
             //x[i].style.display = "none";
         }
     }
+
+    function readFile(input) {
+        let file = input.files[0];
+
+        let reader = new FileReader();
+
+        reader.readAsText(file);
+
+        reader.onload = function () {
+            console.log(reader.result);
+            var myJSON = JSON.parse(reader.result);
+            add(myJSON);
+        };
+        reader.onerror = function () {
+            console.log(reader.error);
+        };
+    }
+    function add(json) {
+        $.ajax({
+            url: `../api/FlightPlan`,
+            type: "POST",
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(json),
+            success: function (result) {
+                alert('success');
+            },
+            fail: function (xhr, textStatus, errorThrown) {
+                alert('failed' + errorThrown);
+            }
+        }).fail(function (data) {
+            alert(data.status + data.responseJSON.title);
+        });
+    }
+
 });
