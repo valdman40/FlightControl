@@ -135,7 +135,7 @@ namespace FlightControlWeb.Models
                         HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
 
                         HttpResponseMessage response = await client.GetAsync(uri);
-                        response.EnsureSuccessStatusCode();
+                      //  response.EnsureSuccessStatusCode();
                         string responseBody = await response.Content.ReadAsStringAsync();
                         if (response.IsSuccessStatusCode && !responseBody.Contains("fail"))
                         {

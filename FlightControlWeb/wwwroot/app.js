@@ -295,9 +295,9 @@ $(document).ready(function () {
     //2018-06-25T17:26:45Z
     let dt = new Date("25 June 2018 17:26:45 UTC");
     function recoursiveAjaxRequest() {
-        let date = dt.toISOString();
+        let date = dt.toISOString().split('.')[0] + "Z";
         $.ajax({
-            url: `../api/Flights?relative_to=${date}`,
+            url: `../api/Flights?relative_to=${date}&sync_all`,
             type: 'GET',
             success: function (result) {
                 Flights = result;
