@@ -197,14 +197,15 @@ $(document).ready(function () {
         removeEmphasis();
         //update isPressedId let
         isPressedId = data[i].flight_id;
-        showPath(data[i]["flight_id"]);
         // set marker icon
         marker.setIcon(activeIcon);
         let flights_plan = getFlightsPlan(data[i].flight_id);
+        showPath(data[i]["flight_id"], flights_plan);
         writeFlightsDetails(flights_plan, data, i);
         // mark red
         redFount(data[i].flight_id);
     }
+
 
 
     function redFount(datai) {
