@@ -119,7 +119,7 @@ $(document).ready(function () {
             writeFlightsDetails(flights_plan, data, i, 1);
         }
 
-        showPath(data[i]["flight_id"]);
+        showPath(data[i]["flight_id"], flights_plan);
         markerFlightsDict[data[i]["flight_id"]].setIcon(activeIcon);
         // mark red
         redFount(data[i].flight_id);
@@ -153,14 +153,14 @@ $(document).ready(function () {
         return flightPlan;
     }
     let shelterMarkers = L.featureGroup();
-    function showPath(flightID) {
+    function showPath(flightID, flights_plan) {
         shelterMarkers.clearLayers();
         map.addLayer(shelterMarkers);
-        let flightPlan = getFlightsPlan(flightID);
+        //let flightPlan = getFlightsPlan(flightID);
         let coords = [];
-        coords.push([flightPlan.initial_location.latitude, flightPlan.initial_location.longitude]);
-        for (let i = 0; i < flightPlan.segments.length; i++) {
-            coords.push([flightPlan.segments[i].latitude, flightPlan.segments[i].longitude]);
+        coords.push([flights_plan.initial_location.latitude, flights_plan.initial_location.longitude]);
+        for (let i = 0; i < flights_plan.segments.length; i++) {
+            coords.push([flights_plan.segments[i].latitude, flights_plan.segments[i].longitude]);
             let polyline = L.polyline(coords, { color: 'red' }).addTo(shelterMarkers);
             // zoom the map to the polyline
             ///map.fitBounds(polyline.getBounds());
