@@ -29,14 +29,10 @@
     <script defer src="app.js"></script>
 
 
-
-    <link rel="stylesheet" href="jquery.datetimepicker.min.css">
+    <!--date&time picker-->
+ <!--   <link rel="stylesheet" href="jquery.datetimepicker.min.css">
     <script src="jquery.js"></script>
-    <script src="jquery.datetimepicker.full.min.js"></script>
-
-
-
-
+    <script src="jquery.datetimepicker.full.min.js"></script> -->
 
     <style>
         body {
@@ -87,6 +83,28 @@
 </head>
 <body style="background-color:aliceblue">
     <div class="container-fluid">
+
+        <!--Error indication-->
+        <div class="row firstrow">
+            <div class="col-md-4">
+                <div id="error_indication" class="alert alert-danger collapse">
+                    <a herf="#" class="close" data-dismiss="alart">&times;</a>
+                </div>
+            </div>
+        </div>
+        <script>
+
+            $(document).ready(function () {
+                //  document.getElementById("error_indication").textContent = "nnn";
+                $('#error_indication').show('fade');
+                // show errors for 10 seconds or until the user close it.
+                setTimeout(function () {
+                    $('#error_indication').hide('fade');
+                }, 10000)
+
+            });
+        </script>
+
         <div class="row">
             <div class="col-md-12">
                 <h1 class="text-center">
@@ -102,6 +120,7 @@
             <div class="col-md-4">
                 <div class="InternalFlights text-center">
                     <h2>All Flights</h2>
+                    <!--flights list-->
                     <ul id="flightsButtons" class=list-group>
                     </ul>
                 </div>
@@ -111,7 +130,7 @@
             <div class="col-md-6">
                 <div class="FlightDetails text-center">
                     <h3>Flight Details:</h3>
-
+                    <!--flight deatils table-->
                     <table style="background-color:lightsteelblue" class="table table-hover table-bordered" id="infoFlightdetails">
                         <tr>
                             <th style="width:50%" scope="col">Company</th>
@@ -147,91 +166,28 @@
             <div class="col-md-1"> </div>
             <div class="col-md-5">
                 <div class="row" style="height:50px"></div>
-                <input id="fileinput" type="file" onchange="readFile(this)">
-                <script>
-                    function readFile(input) {
-                        let file = input.files[0];
-                        let reader = new FileReader();
-                        reader.readAsText(file);
-                        reader.onload = function () {
-                            var myJSON = JSON.parse(reader.result);
-                            AddFlight(myJSON);
-                        };
-                        reader.onerror = function () {
-                            alert(reader.error);
-                            console.log(reader.error);
-                        };
-                    }
-                    function AddFlight(json) {
-                        $.ajax({
-                            url: `../api/FlightPlan`,
-                            type: "POST",
-                            contentType: 'application/json; charset=UTF-8',
-                            data: JSON.stringify(json),
-                            success: function (result) {
-                                alert('success');
-                            },
-                            fail: function (xhr, textStatus, errorThrown) {
-                                alert('failed' + errorThrown);
-                            }
-                        }).fail(function (data) {
-                            alert(data.status + data.responseJSON.title);
-                        });
-                    }
-                </script>
+                <!--upload json file-->
+                <h4> Upload a new flight plan:</h4>
+                <input id="fileinput" type="file">
 
-
-
-
+                <!--date&time picker-->
+                <!--    <div class="row" style="height:50px"></div>
+                <h4> Select different time:</h4>
                 <div class="row">
                     <div id="myDIV" class="header">
-                        <input type="text" id="datetimepicker" placeholder="Select a date and time">
-                        <span onclick="ChooseDatetime()" button type="button" class="btn btn-info">Add</span>
-
-
+                        <input type="text" id="datetimepicker" placeholder="Select date and time">
+                        <span id="timebtn" button type="button" class="btn btn-info">Add</span>
                     </div>
                     <script>
                         $("#datetimepicker").datetimepicker({
                             format: 'd.m.Y H:i',
+                            //format: 'YYYY-MM-DD HH:ii',
                             theme: 'light',
-
                         });
-                        function ChooseDatetime() {
-
-                            var inputValue = document.getElementById("datetimepicker").value;
-                            alert(inputValue);
-                            var t = document.createTextNode(inputValue);
-                            if (inputValue === '') {
-                                alert("You must write something!");
-                            } else {
-                                convTime(inputValue);
-                            }
-                            function convTime(inputValue) {
-                                var res = inputValue.split(" ");
-                                var date = res[0].split(".");
-                                var day = date[0];
-                                var month = date[1];
-                                var year = date[2];
-                                var time = res[1].split(":");
-                                var hour = time[0];
-                                var minutes = time[1];
-                                //	alert ("day-"+day+" month-"+month+" year-"+year+",  hour-"+hour+" min-"+minutes);
-                                var arr = [day, month, year, hour, minutes];
-                                alert(arr);
-                            }
-                            return inputValue;
-                        }
-                    </script>
-                </div>
-
-
-
-
-
-
-
+                        </script> -->
             </div>
         </div>
+    </div>
     </div>
 </body>
 </html>

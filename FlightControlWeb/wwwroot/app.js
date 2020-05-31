@@ -31,33 +31,24 @@ $(document).ready(function () {
     map.on('click', function () {
         removeEmphasis();
     });
-    function calculateEndTime(dateAndTime, FlightPlan) {
-        var date = new Date(dateAndTime);
+    function CalculateEndTime(dateAndTime, FlightPlan) {
+        let date = new Date(dateAndTime);
         let timespan_seconds = 0;
         for (let i = 0; i < FlightPlan.segments.length; i++) {
             timespan_seconds += FlightPlan.segments[i].timespan_seconds;
         }
-        console.log(timespan_seconds);
         date.setSeconds(date.getSeconds() + timespan_seconds);
-
-
-        var set = date.getSeconds();
-        console.log(set);
-
-
-        var resEndTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-        console.log(resEndTime);
+        let resEndTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
         return resEndTime;
-
     }
-    function writeFlightsDetails(FlightPlan, flagIsExternal) {
 
+    function WriteFlightsDetails(FlightPlan, flagIsExternal) {
         let passengers = FlightPlan.passengers;
         let segments_len = FlightPlan.segments.length;
         let time = new Date(FlightPlan.initial_location.date_time);
         let start_time = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
         console.log("start" + start_time);
-        let end_time = calculateEndTime(FlightPlan.initial_location.date_time, FlightPlan);
+        let end_time = CalculateEndTime(FlightPlan.initial_location.date_time, FlightPlan);
         let initia_log = FlightPlan.initial_location.longitude;
         let initial_lat = FlightPlan.initial_location.latitude;
         let initial_location = "longitude: " + initia_log + "   latitude: " + initial_lat;
@@ -116,20 +107,17 @@ $(document).ready(function () {
         let flights_plan = getFlightsPlan(data[i].flight_id);
         // data is Fligt js
         if (data[i].is_external === true) {
-            //document.getElementById("infoFlightdetails").innerHTML = "Flight id: " + data[i].flight_id + " company_name :" + data[i].company_name;
-            writeFlightsDetails(flights_plan, 1);
+            WriteFlightsDetails(flights_plan, 1);
         } else { // its external flight
-            //document.getElementById("infoFlightdetails").innerHTML = "External: " + " Flight id:" + data[i].flight_id + " company_name :" + data[i].company_name;
-            writeFlightsDetails(flights_plan, 0);
+            WriteFlightsDetails(flights_plan, 0);
         }
-
-        showPath(data[i]["flight_id"], flights_plan);
+        let arr = showPath(flights_plan);
         markerFlightsDict[data[i]["flight_id"]].setIcon(activeIcon);
         // mark red
         redFount(data[i].flight_id);
+        //map focus on clicked plane
+        map.setView(arr,5);
     }
-
-
 
     let date = new Date('2019-05-20T21:27:07Z');
     function giveMeByTime() {
@@ -157,7 +145,7 @@ $(document).ready(function () {
         return flightPlan;
     }
     let shelterMarkers = L.featureGroup();
-    function showPath(flightID, flights_plan) {
+    function showPath(flights_plan) {
         shelterMarkers.clearLayers();
         map.addLayer(shelterMarkers);
         //let flightPlan = getFlightsPlan(flightID);
@@ -169,6 +157,7 @@ $(document).ready(function () {
             // zoom the map to the polyline
             ///map.fitBounds(polyline.getBounds());
         }
+        return [flights_plan.initial_location.latitude, flights_plan.initial_location.longitude];
     }
     // initialize a dictionary between flight and the icon corresponding to the map
     let markerFlightsDict = {}
@@ -188,7 +177,6 @@ $(document).ready(function () {
             marker.addTo(group);
             map.addLayer(group); //for removing single plane
             //click on airplane marker
-
             marker.addEventListener("click", () => {
                 IconClicked(data, i, marker);
             });
@@ -204,21 +192,18 @@ $(document).ready(function () {
         // set marker icon
         marker.setIcon(activeIcon);
         let flights_plan = getFlightsPlan(data[i].flight_id);
-        showPath(data[i]["flight_id"], flights_plan);
+        showPath(flights_plan);
         if (data[i].is_external === true) {
-            writeFlightsDetails(flights_plan, 1);
+            WriteFlightsDetails(flights_plan, 1);
         }
         else {
-            writeFlightsDetails(flights_plan, 0);
+            WriteFlightsDetails(flights_plan, 0);
         }
         // mark red
         redFount(data[i].flight_id);
     }
 
-
-
     function redFount(datai) {
-        // console.log(datai);
         let btn = document.createElement("BUTTON");
         let attr = document.createAttribute("class");
         attr.value = "markButtonClass";
@@ -229,7 +214,6 @@ $(document).ready(function () {
     function removeEmphasis() {
         let liButton = document.getElementsByTagName("li");
         ClearTable();
-        ///////////////document.getElementById("infoFlightdetails").innerHTML = "";
         isPressedId = '';
         for (let i = 0; i < liButton.length; i++) {
             liButton[i].isPressed = false;
@@ -252,8 +236,6 @@ $(document).ready(function () {
         document.getElementById("endloc").textContent = "";
         document.getElementById("origin").innerHTML = "";
     }
-
-
 
     function CloseButtonClicked() {
         let close = document.getElementsByClassName("close");
@@ -286,22 +268,14 @@ $(document).ready(function () {
             }
         });
     }
-    function clickDispaly() {
-        let div = this.parentElement;
-        if (div.isPressed == false) {
-            div.style.display = "none";
-        }
-        else {
-            div.isPressed = false;
-            div.classList.toggle('checked');
-        }
-    }
+
     let closebtns = document.querySelectorAll(".close");
     Array.from(closebtns).forEach(item => {
         item.addEventListener("click", () => {
             item.parentElement.style.display = "none";
         });
     });
+
     //2018-06-25T17:26:45Z
     let dt = new Date("25 June 2018 17:26:45 UTC");
     function recoursiveAjaxRequest() {
@@ -326,10 +300,55 @@ $(document).ready(function () {
         $('ul li').remove();
         markerFlightsDict = {};
         let x = document.getElementsByTagName("li");
-        //document.getElementById("infoFlightdetails").innerHTML = "";
         for (let i = 0; i < x.length; i++) {
             map.removeLayer(markerFlightsDict[String(x[i].id)]);
             //x[i].style.display = "none";
         }
     }
+
+    let fileIn = document.getElementById("fileinput");
+    fileIn.addEventListener('change', ReadFile);
+
+    function ReadFile() {
+        let file = this.files[0];
+        let reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = function () {
+            let myJSON = JSON.parse(reader.result);
+            AddFlight(myJSON);
+        };
+        reader.onerror = function () {
+            alert(reader.error);
+            console.log(reader.error);
+        };
+    }
+    function AddFlight(json) {
+        $.ajax({
+            url: `../api/FlightPlan`,
+            type: "POST",
+            contentType: 'application/json; charset=UTF-8',
+            data: JSON.stringify(json),
+            success: function (result) {
+                alert('add success');
+            },
+            fail: function (xhr, textStatus, errorThrown) {
+                alert('failed' + errorThrown);
+            }
+        }).fail(function (data) {
+            alert(data.status + data.responseJSON.title);
+        });
+    }
+
+/*    let timeIn = document.getElementById("timebtn");
+    timeIn.addEventListener('click', ChooseDatetime);
+    function ChooseDatetime() {
+
+        let inputValue = document.getElementById("datetimepicker").value;
+        alert(inputValue);
+        let t = document.createTextNode(inputValue);
+        if (inputValue === '') {
+            alert("You must write something!");
+        }
+        return inputValue;
+    }*/
 });
