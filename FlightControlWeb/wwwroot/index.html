@@ -27,31 +27,43 @@
             integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
             crossorigin=""></script>
     <script defer src="app.js"></script>
+
+
+
+    <link rel="stylesheet" href="jquery.datetimepicker.min.css">
+    <script src="jquery.js"></script>
+    <script src="jquery.datetimepicker.full.min.js"></script>
+
+
+
+
+
     <style>
         body {
             font-family: Century Gothic;
         }
+
         .map {
             margin: 4px;
             border: 3px solid lightsteelblue;
             height: 500px;
         }
 
-            ul li {
-                border: 1px solid rgb(100, 100, 100);
-                background-color: lightsteelblue;
-                color: white;
-                padding: 12px;
-                text-decoration: none;
-                font-size: 18px;
-                display: block;
-                position: relative;
-                font-weight: 500;
-            }
+        ul li {
+            border: 1px solid rgb(100, 100, 100);
+            background-color: lightsteelblue;
+            color: white;
+            padding: 12px;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            position: relative;
+            font-weight: 500;
+        }
 
-                ul li:hover {
-                    background-color: lightblue;
-                }
+            ul li:hover {
+                background-color: lightblue;
+            }
 
         .close {
             cursor: pointer;
@@ -61,17 +73,16 @@
             padding: 6px 6px;
             transform: translate(0%, -50%);
         }
+
             .close:hover {
                 background: red;
             }
+
         .markButtonClass {
             background-color: lightblue;
             color: red;
             font-size: 22px;
         }
-
-
-
     </style>
 </head>
 <body style="background-color:aliceblue">
@@ -168,6 +179,57 @@
                         });
                     }
                 </script>
+
+
+
+
+                <div class="row">
+                    <div id="myDIV" class="header">
+                        <input type="text" id="datetimepicker" placeholder="Select a date and time">
+                        <span onclick="ChooseDatetime()" button type="button" class="btn btn-info">Add</span>
+
+
+                    </div>
+                    <script>
+                        $("#datetimepicker").datetimepicker({
+                            format: 'd.m.Y H:i',
+                            theme: 'light',
+
+                        });
+                        function ChooseDatetime() {
+
+                            var inputValue = document.getElementById("datetimepicker").value;
+                            alert(inputValue);
+                            var t = document.createTextNode(inputValue);
+                            if (inputValue === '') {
+                                alert("You must write something!");
+                            } else {
+                                convTime(inputValue);
+                            }
+                            function convTime(inputValue) {
+                                var res = inputValue.split(" ");
+                                var date = res[0].split(".");
+                                var day = date[0];
+                                var month = date[1];
+                                var year = date[2];
+                                var time = res[1].split(":");
+                                var hour = time[0];
+                                var minutes = time[1];
+                                //	alert ("day-"+day+" month-"+month+" year-"+year+",  hour-"+hour+" min-"+minutes);
+                                var arr = [day, month, year, hour, minutes];
+                                alert(arr);
+                            }
+                            return inputValue;
+                        }
+                    </script>
+                </div>
+
+
+
+
+
+
+
             </div>
         </div>
     </div>
