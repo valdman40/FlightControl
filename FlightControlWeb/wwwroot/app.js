@@ -119,18 +119,9 @@ $(document).ready(function () {
         map.setView(arr,5);
     }
 
-    let date = new Date('2019-05-20T21:27:07Z');
-    function giveMeByTime() {
-        $.ajax({
-            url: `../api/Flights?relative_to=${date}`,
-            type: 'GET',
-            success: function (result) {
-                console.log(result);
-                date.setSeconds(date.getSeconds() + 1);
-                setTimeout(function () { giveMeByTime(); }, 1000);
-            }
-        });
-    }
+    
+
+
     function getFlightsPlan(flightID) {
         let flightPlan;
         $.ajax({
@@ -276,26 +267,36 @@ $(document).ready(function () {
         });
     });
 
-    //2018-06-25T17:26:45Z
-    let dt = new Date("25 June 2018 17:26:45 UTC");
+
     function recoursiveAjaxRequest() {
-        let date = dt.toISOString().split('.')[0] + "Z";
+        let dt = new Date();
+        let date = getStringTime(dt);
         $.ajax({
             url: `../api/Flights?relative_to=${date}&sync_all`,
             type: 'GET',
             success: function (result) {
                 Flights = result;
-                dt.setSeconds(dt.getSeconds() + 4);
                 clearFlights();
                 DrawIcons(Flights);
                 CloseButtonClicked();
                 setTimeout(function () {
                     recoursiveAjaxRequest()
-                }, 4000)
+                }, 1000)
             },
         });
     }
     recoursiveAjaxRequest();
+
+    function getStringTime(dt) {
+        let hours = dt.getHours();
+        hours = hours < 10 ? `0${hours}` : hours;
+        let minutes = dt.getUTCMinutes();
+        minutes = minutes < 10 ? `0${minutes}` : minutes;
+        let seconds = dt.getSeconds();
+        seconds = seconds < 10 ? `0${seconds}` : seconds;
+        return `${dt.getUTCFullYear()}-${dt.getUTCMonth() + 1}-${dt.getUTCDate()}T${hours}:${minutes}:${seconds}Z`;
+    }
+
     function clearFlights() {
         $('ul li').remove();
         markerFlightsDict = {};
