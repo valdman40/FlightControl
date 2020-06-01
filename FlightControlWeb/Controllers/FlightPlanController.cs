@@ -27,7 +27,7 @@ namespace FlightControlWeb.Controllers
             {
                 return Ok(fpManager.getFlightPlan(id).Result);
             }
-            catch (System.AggregateException)
+            catch (NullReferenceException e)
             {
                 return BadRequest("no such FlightPlan");
             }
