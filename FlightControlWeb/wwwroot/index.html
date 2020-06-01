@@ -92,19 +92,6 @@
                 </div>
             </div>
         </div>
-        <script>
-
-            $(document).ready(function () {
-                //  document.getElementById("error_indication").textContent = "nnn";
-                $('#error_indication').show('fade');
-                // show errors for 10 seconds or until the user close it.
-                setTimeout(function () {
-                    $('#error_indication').hide('fade');
-                }, 10000)
-
-            });
-        </script>
-
         <div class="row">
             <div class="col-md-12">
                 <h1 class="text-center">
@@ -169,22 +156,7 @@
                 <!--upload json file-->
                 <h4> Upload a new flight plan:</h4>
                 <input id="fileinput" type="file">
-
-                <!--date&time picker-->
-                <!--    <div class="row" style="height:50px"></div>
-                <h4> Select different time:</h4>
-                <div class="row">
-                    <div id="myDIV" class="header">
-                        <input type="text" id="datetimepicker" placeholder="Select date and time">
-                        <span id="timebtn" button type="button" class="btn btn-info">Add</span>
-                    </div>
-                    <script>
-                        $("#datetimepicker").datetimepicker({
-                            format: 'd.m.Y H:i',
-                            //format: 'YYYY-MM-DD HH:ii',
-                            theme: 'light',
-                        });
-                        </script> -->
+                <button id="b"> upload</button>
             </div>
         </div>
     </div>

@@ -29,7 +29,7 @@ $(document).ready(function () {
 
     setTimeout(function () { map.invalidateSize() }, 10);
     map.on('click', function () {
-        removeEmphasis();
+       removeEmphasis();
     });
     function CalculateEndTime(dateAndTime, FlightPlan) {
         let date = new Date(dateAndTime);
@@ -314,7 +314,13 @@ $(document).ready(function () {
         let reader = new FileReader();
         reader.readAsText(file);
         reader.onload = function () {
-            let myJSON = JSON.parse(reader.result);
+            let myJSON;
+            try {
+                myJSON = JSON.parse(reader.result)
+            }
+            catch (err) {
+                errorIndication(err);
+            }
             AddFlight(myJSON);
         };
         reader.onerror = function () {
@@ -335,20 +341,16 @@ $(document).ready(function () {
                 alert('failed' + errorThrown);
             }
         }).fail(function (data) {
-            alert(data.status + data.responseJSON.title);
+            errorIndication(String(data.status) + " " + data.responseJSON.title);
         });
     }
 
-/*    let timeIn = document.getElementById("timebtn");
-    timeIn.addEventListener('click', ChooseDatetime);
-    function ChooseDatetime() {
-
-        let inputValue = document.getElementById("datetimepicker").value;
-        alert(inputValue);
-        let t = document.createTextNode(inputValue);
-        if (inputValue === '') {
-            alert("You must write something!");
-        }
-        return inputValue;
-    }*/
+    function errorIndication(err) {
+        document.getElementById("error_indication").textContent = err;
+        $('#error_indication').show('fade');
+        // show errors for 10 seconds or until the user close it.
+        setTimeout(function () {
+            $('#error_indication').hide('fade');
+        }, 10000)
+    }
 });
