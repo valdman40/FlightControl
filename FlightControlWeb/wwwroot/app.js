@@ -324,8 +324,7 @@ $(document).ready(function () {
             AddFlight(myJSON);
         };
         reader.onerror = function () {
-            alert(reader.error);
-            console.log(reader.error);
+            errorIndication(reader.error);
         };
     }
     function AddFlight(json) {
