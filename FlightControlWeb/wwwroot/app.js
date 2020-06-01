@@ -1,17 +1,14 @@
-﻿// A $( document ).ready() block.
-$(document).ready(function () {
+﻿$(document).ready(function () {
     let isPressedId;
     let blackIcon = L.icon({
         iconUrl: 'plane.png',
         iconSize: [20, 25],
-        // iconAnchor: [1, 24],
         popupAnchor: [-3, -76],
     });
 
     let activeIcon = L.icon({
         iconUrl: 'redIcon.png',
         iconSize: [20, 25],
-        // iconAnchor: [1, 24],
         popupAnchor: [-3, -76],
     });
     let map = L.map('map', { minZoom: 3, }).setView([33, 31], 2);
@@ -31,6 +28,7 @@ $(document).ready(function () {
     map.on('click', function () {
        removeEmphasis();
     });
+
     function CalculateEndTime(dateAndTime, FlightPlan) {
         let date = new Date(dateAndTime);
         let timespan_seconds = 0;
@@ -47,7 +45,6 @@ $(document).ready(function () {
         let segments_len = FlightPlan.segments.length;
         let time = new Date(FlightPlan.initial_location.date_time);
         let start_time = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds();
-        console.log("start" + start_time);
         let end_time = CalculateEndTime(FlightPlan.initial_location.date_time, FlightPlan);
         let initia_log = FlightPlan.initial_location.longitude;
         let initial_lat = FlightPlan.initial_location.latitude;
@@ -72,7 +69,6 @@ $(document).ready(function () {
         let ul = document.getElementById("flightsButtons");
         for (let i = 0; i < data.length; i++) {
             let li = document.createElement("li");
-
             //List that can be closed using x
             let span = document.createElement("SPAN");
             let txt = document.createTextNode("x");
@@ -119,18 +115,6 @@ $(document).ready(function () {
         map.setView(arr,5);
     }
 
-    let date = new Date('2019-05-20T21:27:07Z');
-    function giveMeByTime() {
-        $.ajax({
-            url: `../api/Flights?relative_to=${date}`,
-            type: 'GET',
-            success: function (result) {
-                console.log(result);
-                date.setSeconds(date.getSeconds() + 1);
-                setTimeout(function () { giveMeByTime(); }, 1000);
-            }
-        });
-    }
     function getFlightsPlan(flightID) {
         let flightPlan;
         $.ajax({
@@ -141,29 +125,25 @@ $(document).ready(function () {
             },
             async: false
         });
-        console.log(flightPlan);
         return flightPlan;
     }
     let shelterMarkers = L.featureGroup();
     function showPath(flights_plan) {
         shelterMarkers.clearLayers();
         map.addLayer(shelterMarkers);
-        //let flightPlan = getFlightsPlan(flightID);
         let coords = [];
         coords.push([flights_plan.initial_location.latitude, flights_plan.initial_location.longitude]);
         for (let i = 0; i < flights_plan.segments.length; i++) {
             coords.push([flights_plan.segments[i].latitude, flights_plan.segments[i].longitude]);
             let polyline = L.polyline(coords, { color: 'red' }).addTo(shelterMarkers);
-            // zoom the map to the polyline
-            ///map.fitBounds(polyline.getBounds());
         }
         return [flights_plan.initial_location.latitude, flights_plan.initial_location.longitude];
     }
     // initialize a dictionary between flight and the icon corresponding to the map
     let markerFlightsDict = {}
-    let group = L.layerGroup();/////
+    let group = L.layerGroup();
     function DrawIcons(data) {
-        group.clearLayers();////
+        group.clearLayers();
         for (let i = 0; i < data.length; i++) {
             let lon = data[i]["longitude"];
             let lat = data[i]["latitude"];
@@ -207,10 +187,11 @@ $(document).ready(function () {
         let btn = document.createElement("BUTTON");
         let attr = document.createAttribute("class");
         attr.value = "markButtonClass";
-        let h = document.getElementById(datai);
-        h.setAttributeNode(attr);
-        h.isPressed = true;
+        let element = document.getElementById(datai);
+        element.setAttributeNode(attr);
+        element.isPressed = true;
     }
+
     function removeEmphasis() {
         let liButton = document.getElementsByTagName("li");
         ClearTable();
@@ -261,10 +242,11 @@ $(document).ready(function () {
             url: `../api/Flights/${inputID}`,
             type: 'DELETE',
             success: function (result) {
-                alert('success');
+                //alert('success');
             },
             fail: function (xhr, textStatus, errorThrown) {
-                alert('failed' + errorThrown);
+                //alert('failed' + errorThrown);
+                errorIndication(errorThrown);
             }
         });
     }
@@ -299,10 +281,9 @@ $(document).ready(function () {
     function clearFlights() {
         $('ul li').remove();
         markerFlightsDict = {};
-        let x = document.getElementsByTagName("li");
-        for (let i = 0; i < x.length; i++) {
-            map.removeLayer(markerFlightsDict[String(x[i].id)]);
-            //x[i].style.display = "none";
+        let allitem = document.getElementsByTagName("li");
+        for (let i = 0; i < allitem.length; i++) {
+            map.removeLayer(markerFlightsDict[String(allitem[i].id)]);
         }
     }
 
