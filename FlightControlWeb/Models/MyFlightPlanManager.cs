@@ -45,15 +45,15 @@ namespace FlightControlWeb.Models
                 foreach (var server in servers) // fetch from each server
                 {
                     string uri = server.URL + "/api/FlightPlan/" + id;
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
                     HttpClient client = new HttpClient();
-
-                    HttpResponseMessage response = await client.GetAsync(uri);
-                    response.EnsureSuccessStatusCode();
-                    string responseBody = await response.Content.ReadAsStringAsync();
-
                     try
                     {
+                        
+                        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+
+                        HttpResponseMessage response = await client.GetAsync(uri);
+                        response.EnsureSuccessStatusCode();
+                        string responseBody = await response.Content.ReadAsStringAsync();
                         if (response.IsSuccessStatusCode && !responseBody.Contains("fail"))
                         {
                             // get all flights into list and then copy the elements into flightList
@@ -65,7 +65,10 @@ namespace FlightControlWeb.Models
                     {
                         Console.WriteLine(e);
                     }
-
+                    catch (UriFormatException e)
+                    {
+                        Console.WriteLine(e);
+                    }
                     client.Dispose();
 
                 }
