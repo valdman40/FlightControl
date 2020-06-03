@@ -28,12 +28,6 @@
             crossorigin=""></script>
     <script defer src="app.js"></script>
 
-
-    <!--date&time picker-->
- <!--   <link rel="stylesheet" href="jquery.datetimepicker.min.css">
-    <script src="jquery.js"></script>
-    <script src="jquery.datetimepicker.full.min.js"></script> -->
-
     <style>
         body {
             font-family: Century Gothic;
@@ -87,7 +81,7 @@
         <!--Error indication-->
         <div class="row firstrow">
             <div class="col-md-4">
-                <div id="error_indication" class="alert alert-danger collapse">
+                <div id="error_indication" class="alert alert-danger collapse fixed-top" style="width:500px">
                     <a herf="#" class="close" data-dismiss="alart">&times;</a>
                 </div>
             </div>
@@ -156,10 +150,8 @@
                 <!--upload json file-->
                 <h4> Upload a new flight plan:</h4>
                 <input id="fileinput" type="file">
-                <button id="b"> upload</button>
             </div>
         </div>
-    </div>
     </div>
 </body>
 </html>

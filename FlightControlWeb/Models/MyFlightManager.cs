@@ -30,10 +30,13 @@ namespace FlightControlWeb.Models
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
 
-        private Initial_Location getLocation(DateTime giventime, string flightPlan_ID, int initialLocation_ID)
+        private Initial_Location getLocation(DateTime giventime, string flightPlan_ID, 
+            int initialLocation_ID)
         {
-            string SegmentsQuery = "SELECT * FROM Segments WHERE Flight_ID = '" + flightPlan_ID + "'";
-            string InitialLocQuery = "SELECT * FROM Initial_Locations WHERE ID = " + initialLocation_ID;
+            string SegmentsQuery = "SELECT * FROM Segments WHERE Flight_ID = '" + 
+                flightPlan_ID + "'";
+            string InitialLocQuery = "SELECT * FROM Initial_Locations WHERE ID = " +
+                initialLocation_ID;
             var rowsFromSegments = DataMan.ExcuteQuery(SegmentsQuery);
             var InitialLoc = DataMan.ExcuteQuery(InitialLocQuery)[0];
             List<Segment> segments = new List<Segment>();
@@ -57,15 +60,19 @@ namespace FlightControlWeb.Models
             DateTime landtime = DateTime.Parse(InitialLoc.Date);
             foreach (Segment endSegment in segments)
             {
-                landtime = landtime.AddSeconds(endSegment.timespan_seconds); // adding the next segment duration
+                // adding the next segment duration
+                landtime = landtime.AddSeconds(endSegment.timespan_seconds); 
                 // check if giventime is in range
                 if (giventime.CompareTo(departtime) >= 0 && giventime.CompareTo(landtime) <= 0)
                 {
-                    TimeSpan secondsOnAir = giventime.Subtract(departtime); // total seconds from last departing untill now
-                    double progress = secondsOnAir.TotalSeconds / endSegment.timespan_seconds; // between 0-1
+                    // total seconds from last departing untill now
+                    TimeSpan secondsOnAir = giventime.Subtract(departtime);
+                    // between 0-1
+                    double progress = secondsOnAir.TotalSeconds / endSegment.timespan_seconds;
                     Line line = new Line();
                     // x is longitude, y is latitude
-                    line.start = new Point() { X = startSegment.longitude, Y = startSegment.latitude };
+                    line.start = new Point() { X = startSegment.longitude, 
+                        Y = startSegment.latitude };
                     line.end = new Point() { X = endSegment.longitude, Y = endSegment.latitude };
                     Point onSegment = line.getPointOnSegment(progress);
                     return new Initial_Location() // location on the current segment
@@ -91,7 +98,8 @@ namespace FlightControlWeb.Models
                 DateTime dt = DateTime.Parse(date);
                 foreach (var row in rowsFromFlightPlans)
                 {
-                    Initial_Location location = getLocation(dt, row.ID, (int)row.Initial_Location_ID);
+                    Initial_Location location = getLocation(dt, row.ID, 
+                        (int)row.Initial_Location_ID);
                     if(location != null) // means that this FlightPlan is active
                     {
                         internalFlights.Add(new Flight()
@@ -140,7 +148,8 @@ namespace FlightControlWeb.Models
                         if (response.IsSuccessStatusCode && !responseBody.Contains("fail"))
                         {
                             // get all flights into list and then copy the elements into flightList
-                            List<Flight> externalFlights = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Flight>>(responseBody);
+                            List<Flight> externalFlights = Newtonsoft.Json.JsonConvert
+                                .DeserializeObject<List<Flight>>(responseBody);
                             DateTime dt = DateTime.Parse(date);
                             foreach (var exFlight in externalFlights)
                             {
@@ -181,7 +190,8 @@ namespace FlightControlWeb.Models
         {
 
                 // get initial location ID by flightplan's id from FlightPlans table
-                string getQuery_extractInitialLocationID = "SELECT Initial_Location_ID FROM FlightPlans WHERE ID = '" + id + "'";
+                string getQuery_extractInitialLocationID = "SELECT Initial_Location_ID FROM " +
+                "FlightPlans WHERE ID = '" + id + "'";
                 var result = DataMan.ExcuteQuery(getQuery_extractInitialLocationID);
                 if (result.Count() == 0)
                 {
@@ -192,13 +202,16 @@ namespace FlightControlWeb.Models
                 int IDFromInitialLocations = (int)initialLocationRow.Initial_Location_ID;
 
                 // delete the row from FlightPlans table
-                string deleteFromFlightPlansQuery = "DELETE from FlightPlans WHERE ID = '" + id+ "'";
+                string deleteFromFlightPlansQuery = "DELETE from FlightPlans WHERE ID = '" 
+                + id+ "'";
                 DataMan.ExcuteQuery(deleteFromFlightPlansQuery);
                 // delete the row from Segments table
-                string deleteFromSegmentsQuery = "DELETE from Segments WHERE Flight_ID = '" + id+ "'";
+                string deleteFromSegmentsQuery = "DELETE from Segments WHERE Flight_ID = '" 
+                + id+ "'";
                 DataMan.ExcuteQuery(deleteFromSegmentsQuery);
                 // delete the row from Initial_Locations table
-                string DeleteFromInitialLocQuery = "DELETE from Initial_Locations WHERE ID = " + IDFromInitialLocations;
+                string DeleteFromInitialLocQuery = "DELETE from Initial_Locations WHERE ID = " 
+                + IDFromInitialLocations;
                 DataMan.ExcuteQuery(DeleteFromInitialLocQuery);
             
             

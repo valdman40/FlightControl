@@ -24,7 +24,8 @@ namespace FlightControlWeb.Models
          public async Task<FlightPlan> getFlightPlan(string id)    
         {
                 // get FlightPlan by id
-                string getQuery_fromFlightPlans = "SELECT * FROM FlightPlans WHERE ID ='" + id + "'";
+                string getQuery_fromFlightPlans = "SELECT * FROM FlightPlans WHERE ID ='" 
+                + id + "'";
                 // var result = cnn.Query(getQuery_fromFlightPlans, new DynamicParameters());
                 var result = DataMan.ExcuteQuery(getQuery_fromFlightPlans);
                 if (result.Count() == 0)
@@ -57,7 +58,8 @@ namespace FlightControlWeb.Models
                         if (response.IsSuccessStatusCode && !responseBody.Contains("fail"))
                         {
                             // get all flights into list and then copy the elements into flightList
-                            FlightPlan externalFlightPlan = Newtonsoft.Json.JsonConvert.DeserializeObject<FlightPlan>(responseBody);
+                            FlightPlan externalFlightPlan = Newtonsoft.Json.JsonConvert
+                                .DeserializeObject<FlightPlan>(responseBody);
                             return externalFlightPlan;
                         }
                     }
@@ -80,7 +82,8 @@ namespace FlightControlWeb.Models
                 //var flightPlan = result.ToList()[0];
                 var flightPlan = result[0];
                 // get Initial_Location by flightPlan.Initial_Location_ID
-                string getQuery_fromInitialLocations = "SELECT Longitude,Latitude,Date FROM Initial_Locations WHERE ID ='" + flightPlan.Initial_Location_ID + "'";
+                string getQuery_fromInitialLocations = "SELECT Longitude,Latitude," +
+                "Date FROM Initial_Locations WHERE ID ='" + flightPlan.Initial_Location_ID + "'";
                 var initialLocationOb = DataMan.ExcuteQuery(getQuery_fromInitialLocations)[0];
                 Initial_Location initial_Location = new Initial_Location()
                 {
@@ -90,7 +93,8 @@ namespace FlightControlWeb.Models
                 };
 
                 // get segments by id and create Segments list
-                string getQuery_fromSegments = "SELECT Longitude,Latitude,Timespan FROM Segments WHERE Flight_ID ='" + id + "'";
+                string getQuery_fromSegments = "SELECT Longitude,Latitude,Timespan " +
+                "FROM Segments WHERE Flight_ID ='" + id + "'";
                 var allSegmentsOb = DataMan.ExcuteQuery(getQuery_fromSegments);
                 List<Segment> segments = new List<Segment>();
                 foreach (var segmentOb in allSegmentsOb)
@@ -119,24 +123,27 @@ namespace FlightControlWeb.Models
             string uniqueID = generateUniqueID(flightPlan.company_name);
                 // post into Initial_Locations table
                 Initial_Location initial_Location = flightPlan.initial_location;
-                string dateString = "'"+initial_Location.date_time.ToString("yyyy-MM-ddTHH:mm:ssZ")+ "'";
-                string postQuery_Initial_Locations = "INSERT INTO Initial_Locations(Longitude, Latitude, Date)"+
-                                                                  " VALUES(@longitude, @latitude, " + dateString + ")";
+                string dateString = "'"+initial_Location.date_time
+                .ToString("yyyy-MM-ddTHH:mm:ssZ")+ "'";
+                string postQuery_Initial_Locations = "INSERT INTO Initial_Locations(Longitude, " +
+                "Latitude, Date) VALUES(@longitude, @latitude, " + dateString + ")";
                 DataMan.ExcuteQuery(postQuery_Initial_Locations, initial_Location);
 
                 // post into FlightPlans table
-                string getQuery_extractInitialLocationID = "SELECT ID FROM Initial_Locations ORDER BY ID DESC LIMIT 1";
+                string getQuery_extractInitialLocationID = "SELECT ID FROM " +
+                "Initial_Locations ORDER BY ID DESC LIMIT 1";
                 var x = DataMan.ExcuteQuery(getQuery_extractInitialLocationID);
                 int lastIDFromInitialLocations = (int)x.ToList()[0].ID;
-                string postQuery_FlightPlans = "INSERT INTO FlightPlans(ID, Company, Passengers, Initial_Location_ID)" +
-                                                               " VALUES('"+ uniqueID + "',@company_name, @passengers, " + lastIDFromInitialLocations + ")";
+                string postQuery_FlightPlans = "INSERT INTO " +
+                "FlightPlans(ID, Company, Passengers, Initial_Location_ID)" +
+                " VALUES('"+ uniqueID + "',@company_name, @passengers, " + lastIDFromInitialLocations + ")";
                 DataMan.ExcuteQuery(postQuery_FlightPlans, flightPlan);
                 // post into Segments table
                 string postQuery_Segment = "";
                 foreach(Segment segment in flightPlan.segments)
                 {
-                    postQuery_Segment = "INSERT INTO Segments(Longitude, Latitude, TimeSpan, Flight_ID)" +
-                                                     " VALUES(@longitude, @latitude, @timespan_seconds, '" + uniqueID + "')";
+                    postQuery_Segment = "INSERT INTO Segments(Longitude, Latitude, TimeSpan, " +
+                    "Flight_ID) VALUES(@longitude, @latitude, @timespan_seconds, '" + uniqueID + "')";
                     DataMan.ExcuteQuery(postQuery_Segment, segment);
                 }
             return flightPlan;

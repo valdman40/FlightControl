@@ -1,17 +1,14 @@
-﻿// A $( document ).ready() block.
-$(document).ready(function () {
+﻿$(document).ready(function () {
     let isPressedId;
     let blackIcon = L.icon({
         iconUrl: 'plane.png',
         iconSize: [20, 25],
-        // iconAnchor: [1, 24],
         popupAnchor: [-3, -76],
     });
 
     let activeIcon = L.icon({
         iconUrl: 'redIcon.png',
         iconSize: [20, 25],
-        // iconAnchor: [1, 24],
         popupAnchor: [-3, -76],
     });
     let map = L.map('map', { minZoom: 3, }).setView([33, 31], 2);
@@ -68,6 +65,7 @@ $(document).ready(function () {
         document.getElementById("startloc").textContent = initial_location;
         document.getElementById("endloc").textContent = final_location;
     }
+
     function ListCreator(data) {
         let ul = document.getElementById("flightsButtons");
         for (let i = 0; i < data.length; i++) {
@@ -84,10 +82,12 @@ $(document).ready(function () {
             // if its not external - add option to remove using x
             if (data[i].is_external === false) {
                 li.appendChild(span);
-                li.appendChild(document.createTextNode("Flight: " + data[i].flight_id + " " + data[i].company_name));
+                li.appendChild(document.createTextNode("Flight: " + data[i].flight_id + " "
+                    + data[i].company_name));
             }
             else {
-                li.appendChild(document.createTextNode("Extrnal flight: " + data[i].flight_id + " " + data[i].company_name));
+                li.appendChild(document.createTextNode("Extrnal flight: " + data[i].flight_id
+                    + " " + data[i].company_name));
             }
             //if this flight is pressed - so mark red
             if (isPressedId === data[i].flight_id) {
@@ -119,9 +119,6 @@ $(document).ready(function () {
         map.setView(arr,5);
     }
 
-    
-
-
     function getFlightsPlan(flightID) {
         let flightPlan;
         $.ajax({
@@ -141,20 +138,19 @@ $(document).ready(function () {
         map.addLayer(shelterMarkers);
         //let flightPlan = getFlightsPlan(flightID);
         let coords = [];
-        coords.push([flights_plan.initial_location.latitude, flights_plan.initial_location.longitude]);
+        coords.push([flights_plan.initial_location.latitude,
+        flights_plan.initial_location.longitude]);
         for (let i = 0; i < flights_plan.segments.length; i++) {
             coords.push([flights_plan.segments[i].latitude, flights_plan.segments[i].longitude]);
             let polyline = L.polyline(coords, { color: 'red' }).addTo(shelterMarkers);
-            // zoom the map to the polyline
-            ///map.fitBounds(polyline.getBounds());
         }
         return [flights_plan.initial_location.latitude, flights_plan.initial_location.longitude];
     }
     // initialize a dictionary between flight and the icon corresponding to the map
     let markerFlightsDict = {}
-    let group = L.layerGroup();/////
+    let group = L.layerGroup();
     function DrawIcons(data) {
-        group.clearLayers();////
+        group.clearLayers();
         for (let i = 0; i < data.length; i++) {
             let lon = data[i]["longitude"];
             let lat = data[i]["latitude"];
@@ -252,7 +248,7 @@ $(document).ready(function () {
             url: `../api/Flights/${inputID}`,
             type: 'DELETE',
             success: function (result) {
-                alert('success');
+                //alert('success');
             },
             fail: function (xhr, textStatus, errorThrown) {
                 alert('failed' + errorThrown);
@@ -294,7 +290,8 @@ $(document).ready(function () {
         minutes = minutes < 10 ? `0${minutes}` : minutes;
         let seconds = dt.getSeconds();
         seconds = seconds < 10 ? `0${seconds}` : seconds;
-        return `${dt.getUTCFullYear()}-${dt.getUTCMonth() + 1}-${dt.getUTCDate()}T${hours}:${minutes}:${seconds}Z`;
+        return `${dt.getUTCFullYear()}-${dt.getUTCMonth() + 1}-`+
+                `${dt.getUTCDate()}T${hours}:${minutes}:${seconds}Z`;
     }
 
     function clearFlights() {
@@ -303,7 +300,6 @@ $(document).ready(function () {
         let x = document.getElementsByTagName("li");
         for (let i = 0; i < x.length; i++) {
             map.removeLayer(markerFlightsDict[String(x[i].id)]);
-            //x[i].style.display = "none";
         }
     }
 
@@ -335,7 +331,7 @@ $(document).ready(function () {
             contentType: 'application/json; charset=UTF-8',
             data: JSON.stringify(json),
             success: function (result) {
-                alert('add success');
+               // alert('add success');
             },
             fail: function (xhr, textStatus, errorThrown) {
                 alert('failed' + errorThrown);

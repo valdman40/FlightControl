@@ -82,10 +82,12 @@
             // if its not external - add option to remove using x
             if (data[i].is_external === false) {
                 li.appendChild(span);
-                li.appendChild(document.createTextNode("Flight: " + data[i].flight_id + " " + data[i].company_name));
+                li.appendChild(document.createTextNode("Flight: " + data[i].flight_id + " "
+                    + data[i].company_name));
             }
             else {
-                li.appendChild(document.createTextNode("Extrnal flight: " + data[i].flight_id + " " + data[i].company_name));
+                li.appendChild(document.createTextNode("Extrnal flight: " + data[i].flight_id
+                    + " " + data[i].company_name));
             }
             //if this flight is pressed - so mark red
             if (isPressedId === data[i].flight_id) {
@@ -136,7 +138,8 @@
         map.addLayer(shelterMarkers);
         //let flightPlan = getFlightsPlan(flightID);
         let coords = [];
-        coords.push([flights_plan.initial_location.latitude, flights_plan.initial_location.longitude]);
+        coords.push([flights_plan.initial_location.latitude,
+        flights_plan.initial_location.longitude]);
         for (let i = 0; i < flights_plan.segments.length; i++) {
             coords.push([flights_plan.segments[i].latitude, flights_plan.segments[i].longitude]);
             let polyline = L.polyline(coords, { color: 'red' }).addTo(shelterMarkers);
@@ -287,7 +290,8 @@
         minutes = minutes < 10 ? `0${minutes}` : minutes;
         let seconds = dt.getSeconds();
         seconds = seconds < 10 ? `0${seconds}` : seconds;
-        return `${dt.getUTCFullYear()}-${dt.getUTCMonth() + 1}-${dt.getUTCDate()}T${hours}:${minutes}:${seconds}Z`;
+        return `${dt.getUTCFullYear()}-${dt.getUTCMonth() + 1}-`+
+                `${dt.getUTCDate()}T${hours}:${minutes}:${seconds}Z`;
     }
 
     function clearFlights() {
