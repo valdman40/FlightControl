@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <h2>Add New Flight</h2>
+    <form action="../api/Flight" method="post"></form>
+    flight Id: <input type="text" id="inputNumber" /><br />
+    company_name: <input type="text" id="inputCompany" /><br />
+    <input type="button" id="btnAddFlight1" value="Add FlightPlan" onclick="enterNewFlightPlan()">
+    <input type="button" id="btnAddFlight2" value="delete FlightPlan" onclick="deleteElement()">
+    <input type="button" id="btnAddFlight2" value="giveMeByTime" onclick="giveMeByTime()">
+    <script type="text/javascript">
+        function initValues() {
+            document.getElementById('inputNumber').value = "";
+            document.getElementById('inputCompany').value = "";
+        }
+
+        var date = new Date('2019-05-20T21:27:07Z');
+        function giveMeByTime() {
+                $.ajax({
+                    url: `../api/Flights?relative_to=${date}`,
+                    type: 'GET',
+                    success: function (result) {
+                        console.log(result);
+                        date.setSeconds(date.getSeconds() + 1);
+                        setTimeout(function () { giveMeByTime(); }, 1000);
+                    }
+                });
+        }
+
+        function deleteElement() {
+            var inputID = document.getElementById('inputNumber').value;
+            $.ajax({
+                url: `../api/Flights/${inputID}`,
+                type: 'DELETE',
+                success: function (result) {
+                    alert('success');
+                }
+            });
+        }
+
+        function enterNewFlightPlan() {
+            var FlightPlansUrl = "../api/FlightPlan"
+            var inputID = document.getElementById('inputNumber').value;
+            var inputCompany = document.getElementById('inputCompany').value;
+            var newFlightPlan = {
+                "passengers": 300,
+                "company_name": inputCompany,
+                "initial_location": {
+                    "latitude": 54,
+                    "longitude": 117,
+                    "date_time": "2018-06-25T17:26:39Z"
+                },
+                "segments": [
+                    {
+                        "longitude": 68,
+                        "latitude": 50,
+                        "timespan_seconds": 831
+                    },
+                    {
+                        "longitude": 115,
+                        "latitude": 89,
+                        "timespan_seconds": 954
+                    }
+                ]
+            };
+
+            const jsonFlightPlan = JSON.stringify(newFlightPlan)
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", FlightPlansUrl);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(jsonFlightPlan);
+            $("#tblFlights").append("<tr><td>" + inputNumber + "</td" + "<td>" + " " + inputCompany + "</td></tr>");
+            initValues();
+        };
+    </script>
+    <h2>Flights Table</h2>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <script>
+
+        /*
+        var productsUrl = "../api/Flight"
+        $.getJSON(productsUrl, function (data) {
+            console.log(data);
+            data.forEach(function (flight) {
+                $("#tblFlights").append(
+                    "<tr><td>" +
+                    flight.flight_id + "   " +
+                    flight.company_name + "    " +
+                    flight.is_external + "    " +
+                    flight.date_time +
+                    "</td></tr>"
+                );
+            });
+        });
+
+         */
+    </script>
+
+    <table id="tblFlights">
+        <tr>
+            <th>Flight Id</th>
+            <th>Company</th>
+        </tr>
+    </table>
+</body>
+</html>
