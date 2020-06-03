@@ -27,7 +27,7 @@ namespace FlightControlWeb.Controllers
         {   
             if (Request.Query.ContainsKey("sync_all"))
               {
-             return fManager.GetAllFlights(Request.Query["relative_to"]).Result; // date located at Request.Query["relative_to"]
+             return fManager.GetAllFlights(Request.Query["relative_to"]).Result;
               }
             return fManager.GetInternalFlights(Request.Query["relative_to"]);
         }

@@ -28,7 +28,7 @@ namespace FlightControlWeb.Tests
                 Server y = new Server() { ID = "test", URL = "test" };
                 mock.Mock<IDataManager>()
                     .Setup(x => x.ExcuteQuery<Server>("INSERT INTO Servers(ID,URL)" +
-                                                  " VALUES(@ID, @URL)", y)).Returns(getSampleServerList());
+                                 " VALUES(@ID, @URL)", y)).Returns(getSampleServerList());
 
 
                 var cls = mock.Create<MyServersManager>();
@@ -74,25 +74,7 @@ namespace FlightControlWeb.Tests
                 }
             }
         }
-        /*
-        [Fact]
 
-        public  void _FlightPlanControllerGetTest()
-        {
-            using (var mock = AutoMock.GetLoose())
-            {
-                var x = new Mock<IFlightPlanManager>();
-                var z = new Task<FlightPlan>(System.Func(new FlightPlan() { company_name = "sd" });
-                //var z = Task<FlightPlan>.Factory.StartNew(new FlightPlan() { company_name = "sd" });
-                x.Setup(x => x.getFlightPlan("123")).Returns(z);
-                FlightPlanController f = new FlightPlanController(x.Object);
-                var actual = f.Get("123").Value;
-                var expected = new FlightPlan() { company_name = "sd" };
-                Assert.True(actual != null);
-                Assert.Equal(expected.company_name, actual.company_name);
-            }
-        }
-        */
         [Fact]
         public void _FlightPlanControllerPostTest()
         {
@@ -144,7 +126,8 @@ namespace FlightControlWeb.Tests
 
             var httpContext = new DefaultHttpContext();
 
-            httpContext.Request.HttpContext.Request.QueryString = new QueryString("?relative_to=2018-09-24T04:26:19Z&sync_all"); ;
+            httpContext.Request.HttpContext.Request.QueryString = 
+                new QueryString("?relative_to=2018-09-24T04:26:19Z&sync_all"); ;
 
             var controllerContext = new ControllerContext()
             {
@@ -173,13 +156,15 @@ namespace FlightControlWeb.Tests
             // Arrange
             DateTime dateTime = DateTime.Parse("2018-09-24T04:26:19Z").ToUniversalTime();
             var x = new Mock<IFlightManager>();
-            x.Setup(x => x.GetInternalFlights("2018-09-24T04:26:19Z")).Returns(getSampleFlights());
+            x.Setup(x => x.GetInternalFlights("2018-09-24T04:26:19Z"))
+                .Returns(getSampleFlights());
 
             FlightsController flightsController = new FlightsController(x.Object);
 
             var httpContext = new DefaultHttpContext();
 
-            httpContext.Request.HttpContext.Request.QueryString = new QueryString("?relative_to=2018-09-24T04:26:19Z"); ;
+            httpContext.Request.HttpContext.Request.QueryString = 
+                new QueryString("?relative_to=2018-09-24T04:26:19Z"); ;
 
             var controllerContext = new ControllerContext()
             {
